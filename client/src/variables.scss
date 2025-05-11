@@ -1,0 +1,37 @@
+// Variables.scss - Color variables and theme settings
+
+// Traditional Vietnamese color palette
+:root {
+  // Primary colors
+  --primary-red: #a61d1f; // Traditional Vietnamese red (cờ đỏ sao vàng)
+  --primary-gold: #c5a45d; // Gold/yellow tone found in Vietnamese royal items
+  
+  // Secondary colors
+  --secondary-brown: #8C5941; // Earthy brown found in Vietnamese ceramics
+  --dark-brown: #4A2C2B; // Deep brown for text and accents
+  
+  // Background colors
+  --cream: #F8F2DE; // Soft cream reminiscent of rice paper
+  --light-beige: #e7dfd3; // Light beige for subtle backgrounds
+  
+  // Accent colors
+  --dark-green: #2A5C3F; // Deep green found in Vietnamese jade
+  --imperial-yellow: #F9C63D; // Yellow used in imperial Vietnamese artifacts
+  --lotus-pink: #E8A798; // Soft pink like lotus flowers
+  
+  // Utility colors
+  --text-dark: #333333;
+  --text-light: #FFFFFF;
+  --border-light: #E0E0E0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  // Font families
+  --font-heading: 'Libre Baskerville', serif;
+  --font-body: 'Roboto', sans-serif;
+}
+
+// Media query breakpoints
+$breakpoint-small: 576px;
+$breakpoint-medium: 768px;
+$breakpoint-large: 992px;
+$breakpoint-xlarge: 1200px; 

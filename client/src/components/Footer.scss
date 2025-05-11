@@ -1,0 +1,232 @@
+@import '../variables.scss';
+
+.site-footer {
+  margin-top: auto;
+  background-color: var(--dark-brown);
+  color: #fff;
+  
+  .traditional-border {
+    height: 15px;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--primary-gold),
+      var(--primary-gold) 10px,
+      var(--primary-red) 10px,
+      var(--primary-red) 20px
+    );
+  }
+  
+  // Main Footer
+  .footer-main {
+    padding: 4rem 0;
+    background-color: var(--dark-brown);
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://i.pinimg.com/originals/55/01/80/550180dc36db95f01b9a3b3d26d5c3c1.png');
+      background-size: 200px;
+      opacity: 0.05;
+    }
+    
+    .container {
+      position: relative;
+    }
+  }
+  
+  // Footer Columns
+  .footer-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2rem;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  // Footer Logo and Description
+  .footer-logo {
+    margin-bottom: 1.5rem;
+    
+    .logo-text {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      
+      span {
+        color: var(--primary-gold);
+      }
+    }
+  }
+  
+  .footer-description {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  // Social Icons
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+    
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: var(--primary-red);
+      }
+    }
+  }
+  
+  // Footer Headings
+  .footer-heading {
+    color: var(--primary-gold);
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 10px;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background-color: var(--primary-gold);
+    }
+  }
+  
+  // Footer Links
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    
+    li {
+      margin-bottom: 0.8rem;
+    }
+    
+    a {
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+      position: relative;
+      padding-left: 1rem;
+      
+      &::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--primary-gold);
+      }
+      
+      &:hover {
+        color: var(--primary-gold);
+        padding-left: 1.2rem;
+      }
+    }
+  }
+  
+  // Contact Information
+  .footer-contact {
+    font-style: normal;
+    
+    p {
+      margin-bottom: 0.8rem;
+      padding-left: 1.5rem;
+      position: relative;
+      color: rgba(255, 255, 255, 0.8);
+      
+      i {
+        position: absolute;
+        left: 0;
+        top: 0.15rem;
+        color: var(--primary-gold);
+      }
+    }
+  }
+  
+  // Footer Bottom
+  .footer-bottom {
+    padding: 1.5rem 0;
+    background-color: lighten(#4A2C2B, 5%);
+    
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+    
+    .copyright {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    
+    .payment-icons {
+      display: flex;
+      gap: 1rem;
+      
+      img {
+        height: 24px;
+        width: auto;
+        filter: brightness(0) invert(1);
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+        
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  
+  // Icons
+  .icon-facebook::before {
+    content: "f";
+  }
+  
+  .icon-instagram::before {
+    content: "i";
+  }
+  
+  .icon-youtube::before {
+    content: "y";
+  }
+  
+  .icon-location::before {
+    content: "📍";
+  }
+  
+  .icon-phone::before {
+    content: "📞";
+  }
+  
+  .icon-mail::before {
+    content: "✉";
+  }
+} 
