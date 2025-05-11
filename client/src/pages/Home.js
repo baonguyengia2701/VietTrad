@@ -169,7 +169,7 @@ const Home = () => {
             </div>
             <div className="heritage-image">
               <div className="image-frame">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Imperial_City%2C_Hu%E1%BA%BF%2C_Vietnam_%2840559743483%29.jpg" alt="Di sản văn hóa Việt Nam" />
+                <img src="https://dantra.vn/assets/san-pham/2023_09/lang-non-tay-ho.jpg" alt="Di sản văn hóa Việt Nam" />
               </div>
             </div>
           </div>
