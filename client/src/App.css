@@ -40,7 +40,7 @@ body {
 
 /* Các tiêu đề */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Playfair Display', serif;
   margin-bottom: 1rem;
   color: var(--dark-brown);
 }
