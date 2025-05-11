@@ -1,5 +1,5 @@
 // Hình ảnh nền
-export const VIETNAMESE_TRADITIONAL_BACKGROUND = 'https://images.unsplash.com/photo-1557750255-c76072a7fdf1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80';
+export const VIETNAMESE_TRADITIONAL_BACKGROUND = require('./BACKGROUND.jpg');
 export const CLOUD_PATTERN = 'https://i.pinimg.com/originals/55/01/80/550180dc36db95f01b9a3b3d26d5c3c1.png';
 
 // Hình ảnh divider (dùng cho phân cách section)
