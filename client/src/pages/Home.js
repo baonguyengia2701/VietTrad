@@ -1,15 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FeaturedProducts from '../components/product/FeaturedProducts';
+import FeaturedCategories from '../components/category/FeaturedCategories';
 import './Home.scss';
 import { 
   VIETNAMESE_TRADITIONAL_BACKGROUND, 
-  DONG_HO_PAINTING, 
-  BAT_TRANG_POTTERY, 
-  HUE_EMBROIDERY,
-  NON_LA,
-  SILK_PAINTING,
-  EMBROIDERED_SILK,
-  DRAGON_DIVIDER,
   PHOENIX_DIVIDER
 } from '../assets/images';
 
@@ -33,121 +28,16 @@ const Home = () => {
         <div className="traditional-border"></div>
       </section>
 
-      {/* Featured Categories */}
-      <section className="featured-categories">
-        <div className="container">
-          <h2 className="section-title">Danh mục nổi bật</h2>
-          <div className="category-description">
-            <p>Nghệ thuật truyền thống Việt Nam qua các sản phẩm tinh hoa hàng trăm năm lịch sử</p>
-          </div>
-          <div className="categories-grid">
-            <div className="category-card">
-              <div className="category-image">
-                <img src={DONG_HO_PAINTING} alt="Tranh dân gian" />
-              </div>
-              <h3>Tranh dân gian</h3>
-              <Link to="/products/paintings" className="category-link">Khám phá</Link>
-            </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img src={BAT_TRANG_POTTERY} alt="Gốm sứ" />
-              </div>
-              <h3>Gốm sứ</h3>
-              <Link to="/products/pottery" className="category-link">Khám phá</Link>
-            </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img src={HUE_EMBROIDERY} alt="Thêu thùa" />
-              </div>
-              <h3>Thêu thùa</h3>
-              <Link to="/products/embroidery" className="category-link">Khám phá</Link>
-            </div>
-          </div>
-        </div>
-        <div className="divider">
-          <img src={DRAGON_DIVIDER} alt="Hoa văn rồng" />
-        </div>
-      </section>
+      {/* Featured Categories - Sử dụng component với API thật */}
+      <FeaturedCategories />
 
-      {/* Featured Products */}
-      <section className="featured-products">
-        <div className="container">
-          <h2 className="section-title">Sản phẩm nổi bật</h2>
-          <div className="products-grid">
-            <div className="product-card">
-              <div className="product-image">
-                <img src={NON_LA} alt="Nón lá truyền thống" />
-                <div className="product-overlay">
-                  <div className="overlay-buttons">
-                    <button className="btn-icon"><i className="icon-heart"></i></button>
-                    <button className="btn-icon"><i className="icon-cart"></i></button>
-                    <Link to="/products/non-la-truyen-thong" className="btn-icon"><i className="icon-eye"></i></Link>
-                  </div>
-                </div>
-              </div>
-              <div className="product-info">
-                <h3>Nón lá truyền thống</h3>
-                <div className="product-price">
-                  <span>120.000₫</span>
-                </div>
-                <div className="product-origin">
-                  <span>Làng nghề: Chuông, Hà Nội</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="product-card">
-              <div className="product-image">
-                <img src={SILK_PAINTING} alt="Tranh lụa" />
-                <div className="product-overlay">
-                  <div className="overlay-buttons">
-                    <button className="btn-icon"><i className="icon-heart"></i></button>
-                    <button className="btn-icon"><i className="icon-cart"></i></button>
-                    <Link to="/products/tranh-lua-phong-canh" className="btn-icon"><i className="icon-eye"></i></Link>
-                  </div>
-                </div>
-              </div>
-              <div className="product-info">
-                <h3>Tranh lụa phong cảnh</h3>
-                <div className="product-price">
-                  <span>1.500.000₫</span>
-                </div>
-                <div className="product-origin">
-                  <span>Làng nghề: Vạn Phúc, Hà Đông</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="product-card">
-              <div className="product-image">
-                <img src={EMBROIDERED_SILK} alt="Khăn lụa thêu" />
-                <div className="product-overlay">
-                  <div className="overlay-buttons">
-                    <button className="btn-icon"><i className="icon-heart"></i></button>
-                    <button className="btn-icon"><i className="icon-cart"></i></button>
-                    <Link to="/products/khan-lua-theu" className="btn-icon"><i className="icon-eye"></i></Link>
-                  </div>
-                </div>
-              </div>
-              <div className="product-info">
-                <h3>Khăn lụa thêu hoa sen</h3>
-                <div className="product-price">
-                  <span>450.000₫</span>
-                </div>
-                <div className="product-origin">
-                  <span>Làng nghề: Quất Động, Thường Tín</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="view-all-container">
-            <Link to="/products" className="btn btn-outline">Xem tất cả sản phẩm</Link>
-          </div>
-        </div>
-        <div className="divider">
-          <img src={PHOENIX_DIVIDER} alt="Hoa văn phượng" />
-        </div>
-      </section>
+      {/* Featured Products - Sử dụng component với API thật */}
+      <FeaturedProducts />
+      
+      {/* Divider */}
+      <div className="divider">
+        <img src={PHOENIX_DIVIDER} alt="Hoa văn phượng" />
+      </div>
 
       {/* Heritage Story Section */}
       <section className="heritage-story">

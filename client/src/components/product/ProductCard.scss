@@ -21,6 +21,17 @@ $border-color: #e0e0e0;
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   }
+
+  // Style đặc biệt cho featured products (clickable)
+  &[onclick] {
+    cursor: pointer;
+    border: 2px solid transparent;
+    
+    &:hover {
+      border-color: $secondary-color;
+      box-shadow: 0 10px 25px rgba(201, 73, 29, 0.2);
+    }
+  }
   
   &__image {
     position: relative;
@@ -54,6 +65,19 @@ $border-color: #e0e0e0;
     border-radius: 3px;
     font-weight: bold;
     font-size: 0.875rem;
+  }
+  
+  &__bestseller-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: $secondary-color;
+    color: $light-color;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   
   &__content {
@@ -164,6 +188,18 @@ $border-color: #e0e0e0;
         background-color: darken($primary-color, 10%);
       }
     }
+  }
+
+  &__featured-note {
+    margin-top: 15px;
+    padding: 8px 12px;
+    background-color: #f0f8ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #0066cc;
+    text-align: center;
+    font-style: italic;
   }
 }
 

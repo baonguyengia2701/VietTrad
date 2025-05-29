@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ProductCard from './ProductCard';
+import { productService } from '../../services/productService';
 import './FeaturedProducts.scss';
 
 const FeaturedProducts = () => {
@@ -9,52 +9,29 @@ const FeaturedProducts = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Trong thực tế, bạn sẽ gọi API từ backend
-    // Ex: fetch('/api/products/featured')
-    
-    // Giả lập dữ liệu cho demo
-    setTimeout(() => {
-      const demoProducts = [
-        {
-          _id: '1',
-          name: 'Bình gốm Bát Tràng hoa văn truyền thống',
-          slug: 'binh-gom-bat-trang-hoa-van-truyen-thong',
-          price: 750000,
-          images: [{ url: 'https://via.placeholder.com/300x300?text=Pottery', alt: 'Bình gốm Bát Tràng' }],
-          craftVillage: { name: 'Làng gốm Bát Tràng', slug: 'lang-gom-bat-trang' }
-        },
-        {
-          _id: '2',
-          name: 'Tranh đồng mạ vàng Đồng Xâm',
-          slug: 'tranh-dong-ma-vang-dong-xam',
-          price: 2500000,
-          discountPrice: 2200000,
-          images: [{ url: 'https://via.placeholder.com/300x300?text=Metal+Art', alt: 'Tranh đồng mạ vàng' }],
-          craftVillage: { name: 'Làng nghề Đồng Xâm', slug: 'lang-nghe-dong-xam' }
-        },
-        {
-          _id: '3',
-          name: 'Nón lá Huế thêu hoa sen',
-          slug: 'non-la-hue-theu-hoa-sen',
-          price: 350000,
-          images: [{ url: 'https://via.placeholder.com/300x300?text=Conical+Hat', alt: 'Nón lá Huế' }],
-          craftVillage: { name: 'Làng nón Huế', slug: 'lang-non-hue' }
-        },
-        {
-          _id: '4',
-          name: 'Đèn lồng Hội An vẽ tay',
-          slug: 'den-long-hoi-an-ve-tay',
-          price: 450000,
-          discountPrice: 380000,
-          images: [{ url: 'https://via.placeholder.com/300x300?text=Lantern', alt: 'Đèn lồng Hội An' }],
-          craftVillage: { name: 'Phố cổ Hội An', slug: 'pho-co-hoi-an' }
-        }
-      ];
-      
-      setProducts(demoProducts);
-      setLoading(false);
-    }, 1000);
+    fetchBestsellerProducts();
   }, []);
+
+  const fetchBestsellerProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Gọi API để lấy sản phẩm bán chạy nhất
+      const bestsellerProducts = await productService.getBestsellerProducts(3); // Lấy 3 sản phẩm
+      setProducts(bestsellerProducts);
+    } catch (err) {
+      console.error('Error fetching bestseller products:', err);
+      setError(err.message || 'Không thể tải sản phẩm bán chạy');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProductClick = (product) => {
+    // Điều hướng đến trang Products với filter bestseller và search theo tên sản phẩm
+    window.location.href = `/products?sort=bestseller&search=${encodeURIComponent(product.name)}`;
+  };
 
   if (error) {
     return <div className="error-message">Không thể tải sản phẩm: {error}</div>;
@@ -63,22 +40,46 @@ const FeaturedProducts = () => {
   return (
     <section className="featured-products">
       <div className="container">
-        <div className="section-header">
-          <h2>Sản phẩm nổi bật</h2>
-          <Link to="/products" className="view-all">Xem tất cả</Link>
-        </div>
-
+        <h2 className="section-title">Sản phẩm nổi bật</h2>
+        
         {loading ? (
           <div className="loading">Đang tải sản phẩm...</div>
-        ) : (
-          <div className="product-grid">
+        ) : products.length > 0 ? (
+          <div className="products-grid">
             {products.map(product => (
-              <div key={product._id} className="product-grid__item">
-                <ProductCard product={product} />
+              <div key={product._id} className="product-card" onClick={() => handleProductClick(product)}>
+                <div className="product-image">
+                  <img 
+                    src={product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/300x300?text=No+Image'} 
+                    alt={product.name} 
+                  />
+                  <div className="product-overlay">
+                    <div className="overlay-buttons">
+                      <button className="btn-icon"><i className="icon-heart"></i></button>
+                      <button className="btn-icon"><i className="icon-cart"></i></button>
+                      <div className="btn-icon"><i className="icon-eye"></i></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="product-info">
+                  <h3>{product.name}</h3>
+                  <div className="product-price">
+                    <span>{product.price?.toLocaleString('vi-VN') || '0'}₫</span>
+                  </div>
+                  <div className="product-origin">
+                    <span>Làng nghề: {product.brand?.name || product.brandName || product.specifications?.origin || 'Phú Kiện'}</span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
+        ) : (
+          <div className="no-products">Không có sản phẩm nào để hiển thị</div>
         )}
+        
+        <div className="view-all-container">
+          <Link to="/products?sort=bestseller" className="btn btn-outline">Xem tất cả sản phẩm bán chạy</Link>
+        </div>
       </div>
     </section>
   );
