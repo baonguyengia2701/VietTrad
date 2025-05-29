@@ -21,7 +21,7 @@ const Home = () => {
             <p>Khám phá những sản phẩm mang đậm bản sắc văn hóa và nghệ thuật truyền thống Việt Nam</p>
             <div className="hero-buttons">
               <Link to="/products" className="btn btn-primary">Khám phá sản phẩm</Link>
-              <Link to="/heritage" className="btn btn-outline">Tìm hiểu làng nghề</Link>
+              <Link to="/di-san" className="btn btn-outline">Tìm hiểu làng nghề</Link>
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@ const Home = () => {
                 văn hóa truyền thống, đồng thời giúp các làng nghề có thêm nguồn thu nhập 
                 bền vững trong thời đại hiện nay.
               </p>
-              <Link to="/heritage" className="btn btn-primary">Khám phá câu chuyện</Link>
+              <Link to="/di-san" className="btn btn-primary">Khám phá câu chuyện</Link>
             </div>
             <div className="heritage-image">
               <div className="image-frame">

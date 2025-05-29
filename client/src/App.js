@@ -11,6 +11,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
+import BlogList from './pages/BlogList';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { CartProvider } from './contexts/CartContext';
@@ -87,6 +88,7 @@ function App() {
                     </ProtectedRoute>
                   } />
                   <Route path="/thank-you" element={<ThankYou />} />
+                  <Route path="/di-san" element={<BlogList />} />
                   {/* <Route path="/products/:slug" element={<ProductDetailPage />} /> */}
                   {/* Các định tuyến khác sẽ được thêm dần */}
                   {/* 

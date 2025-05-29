@@ -169,8 +169,8 @@ const Header = () => {
               <li className={location.pathname.includes('/products') ? 'active' : ''}>
                 <Link to="/products">Sản phẩm</Link>
               </li>
-              <li className={location.pathname.includes('/heritage') ? 'active' : ''}>
-                <Link to="/heritage">Di sản</Link>
+              <li className={location.pathname.includes('/di-san') ? 'active' : ''}>
+                <Link to="/di-san">Di sản</Link>
               </li>
               <li className={location.pathname.includes('/about') ? 'active' : ''}>
                 <Link to="/about">Giới thiệu</Link>

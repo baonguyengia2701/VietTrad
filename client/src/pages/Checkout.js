@@ -4,6 +4,7 @@ import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { orderService } from '../services/orderService';
+import { addressService } from '../services/addressService';
 import './Checkout.scss';
 
 const Checkout = () => {
@@ -18,8 +19,11 @@ const Checkout = () => {
     phone: '',
     address: '',
     city: '',
+    cityCode: '',
     district: '',
+    districtCode: '',
     ward: '',
+    wardCode: '',
     note: ''
   });
 
@@ -30,22 +34,87 @@ const Checkout = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Cities data (simplified for demo)
-  const cities = [
-    'Hà Nội', 'TP.Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
-    'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu'
-  ];
+  // Address data from API
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [addressLoading, setAddressLoading] = useState(false);
 
-  const districts = {
-    'Hà Nội': ['Ba Đình', 'Hoàn Kiếm', 'Tây Hồ', 'Long Biên', 'Cầu Giấy', 'Đống Đa', 'Hai Bà Trưng', 'Hoàng Mai'],
-    'TP.Hồ Chí Minh': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7', 'Quận 8'],
-    'Đà Nẵng': ['Hải Châu', 'Thanh Khê', 'Sơn Trà', 'Ngũ Hành Sơn', 'Liên Chiểu', 'Cẩm Lệ']
-  };
+  // Load provinces on component mount
+  useEffect(() => {
+    const loadProvinces = async () => {
+      try {
+        setAddressLoading(true);
+        const provincesData = await addressService.getProvinces();
+        setProvinces(provincesData);
+      } catch (error) {
+        console.error('Error loading provinces:', error);
+      } finally {
+        setAddressLoading(false);
+      }
+    };
 
-  const wards = {
-    'Ba Đình': ['Phúc Xá', 'Trúc Bạch', 'Vĩnh Phúc', 'Cống Vị', 'Liễu Giai'],
-    'Hoàn Kiếm': ['Phúc Tân', 'Đồng Xuân', 'Hàng Mã', 'Hàng Buồm', 'Hàng Đào'],
-    'Quận 1': ['Bến Nghé', 'Bến Thành', 'Đa Kao', 'Cô Giang', 'Nguyễn Thái Bình']
+    loadProvinces();
+  }, []);
+
+  // Load districts when province changes
+  useEffect(() => {
+    const loadDistricts = async () => {
+      if (shippingInfo.cityCode) {
+        try {
+          setAddressLoading(true);
+          const districtsData = await addressService.getDistrictsByProvince(shippingInfo.cityCode);
+          setDistricts(districtsData);
+        } catch (error) {
+          console.error('Error loading districts:', error);
+        } finally {
+          setAddressLoading(false);
+        }
+      } else {
+        setDistricts([]);
+      }
+    };
+
+    loadDistricts();
+  }, [shippingInfo.cityCode]);
+
+  // Load wards when district changes
+  useEffect(() => {
+    const loadWards = async () => {
+      if (shippingInfo.districtCode) {
+        try {
+          setAddressLoading(true);
+          const wardsData = await addressService.getWardsByDistrict(shippingInfo.districtCode);
+          setWards(wardsData);
+        } catch (error) {
+          console.error('Error loading wards:', error);
+        } finally {
+          setAddressLoading(false);
+        }
+      } else {
+        setWards([]);
+      }
+    };
+
+    loadWards();
+  }, [shippingInfo.districtCode]);
+
+  // Helper function to calculate shipping fee by city
+  const calculateShippingFeeByCity = (city) => {
+    const cityFees = {
+      'Hà Nội': 30000,
+      'Thành phố Hà Nội': 30000,
+      'TP.Hồ Chí Minh': 35000,
+      'Thành phố Hồ Chí Minh': 35000,
+      'Đà Nẵng': 40000,
+      'Thành phố Đà Nẵng': 40000,
+      'Hải Phòng': 45000,
+      'Thành phố Hải Phòng': 45000,
+      'Cần Thơ': 50000,
+      'Thành phố Cần Thơ': 50000
+    };
+    
+    return cityFees[city] || 60000;
   };
 
   // Shipping fee calculation
@@ -58,21 +127,14 @@ const Checkout = () => {
       return 0;
     }
     
+    const standardFee = calculateShippingFeeByCity(shippingInfo.city);
+    
     // Tính phí vận chuyển dựa trên phương thức
     if (shippingMethod === 'express') {
-      return 50000;
+      return standardFee + 30000; // Giao hàng nhanh = tiêu chuẩn + 30k
     }
     
-    // Standard shipping fee based on city
-    const cityFees = {
-      'Hà Nội': 30000,
-      'TP.Hồ Chí Minh': 35000,
-      'Đà Nẵng': 40000,
-      'Hải Phòng': 45000,
-      'Cần Thơ': 50000
-    };
-    
-    return cityFees[shippingInfo.city] || 60000; // Default fee for other cities
+    return standardFee;
   };
 
   // Voucher codes (demo data)
@@ -100,27 +162,50 @@ const Checkout = () => {
   };
 
   const handleInputChange = (field, value) => {
+    // Xử lý đặc biệt cho việc chọn tỉnh thành phố
+    if (field === 'city') {
+      const selectedProvince = provinces.find(province => province.name === value);
+      setShippingInfo(prev => ({
+        ...prev,
+        city: value,
+        cityCode: selectedProvince ? selectedProvince.code : '',
+        district: '', // Reset district khi thay đổi tỉnh
+        districtCode: '',
+        ward: '', // Reset ward khi thay đổi tỉnh
+        wardCode: ''
+      }));
+      return;
+    }
+
+    // Xử lý đặc biệt cho việc chọn quận huyện
+    if (field === 'district') {
+      const selectedDistrict = districts.find(district => district.name === value);
+      setShippingInfo(prev => ({
+        ...prev,
+        district: value,
+        districtCode: selectedDistrict ? selectedDistrict.code : '',
+        ward: '', // Reset ward khi thay đổi quận huyện
+        wardCode: ''
+      }));
+      return;
+    }
+
+    // Xử lý đặc biệt cho việc chọn phường xã
+    if (field === 'ward') {
+      const selectedWard = wards.find(ward => ward.name === value);
+      setShippingInfo(prev => ({
+        ...prev,
+        ward: value,
+        wardCode: selectedWard ? selectedWard.code : ''
+      }));
+      return;
+    }
+
+    // Xử lý các trường khác bình thường
     setShippingInfo(prev => ({
       ...prev,
       [field]: value
     }));
-
-    // Reset district and ward when city changes
-    if (field === 'city') {
-      setShippingInfo(prev => ({
-        ...prev,
-        district: '',
-        ward: ''
-      }));
-    }
-
-    // Reset ward when district changes
-    if (field === 'district') {
-      setShippingInfo(prev => ({
-        ...prev,
-        ward: ''
-      }));
-    }
   };
 
   const handleApplyVoucher = () => {
@@ -176,19 +261,13 @@ const Checkout = () => {
 
   // Hàm tính phí vận chuyển gốc (không tính ngưỡng miễn phí)
   const getOriginalShippingFee = () => {
+    const standardFee = calculateShippingFeeByCity(shippingInfo.city);
+    
     if (shippingMethod === 'express') {
-      return 50000;
+      return standardFee + 30000; // Giao hàng nhanh = tiêu chuẩn + 30k
     }
     
-    const cityFees = {
-      'Hà Nội': 30000,
-      'TP.Hồ Chí Minh': 35000,
-      'Đà Nẵng': 40000,
-      'Hải Phòng': 45000,
-      'Cần Thơ': 50000
-    };
-    
-    return cityFees[shippingInfo.city] || 60000;
+    return standardFee;
   };
 
   const getFinalTotal = () => {
@@ -394,10 +473,13 @@ const Checkout = () => {
                     <Form.Select
                       value={shippingInfo.city}
                       onChange={(e) => handleInputChange('city', e.target.value)}
+                      disabled={addressLoading}
                     >
-                      <option value="">Chọn tỉnh/thành phố</option>
-                      {cities.map(city => (
-                        <option key={city} value={city}>{city}</option>
+                      <option value="">
+                        {addressLoading ? 'Đang tải...' : 'Chọn tỉnh/thành phố'}
+                      </option>
+                      {provinces.map(province => (
+                        <option key={province.code} value={province.name}>{province.name}</option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -411,11 +493,17 @@ const Checkout = () => {
                     <Form.Select
                       value={shippingInfo.district}
                       onChange={(e) => handleInputChange('district', e.target.value)}
-                      disabled={!shippingInfo.city}
+                      disabled={!shippingInfo.cityCode || addressLoading}
                     >
-                      <option value="">Chọn quận/huyện</option>
-                      {shippingInfo.city && districts[shippingInfo.city]?.map(district => (
-                        <option key={district} value={district}>{district}</option>
+                      <option value="">
+                        {!shippingInfo.cityCode 
+                          ? 'Vui lòng chọn tỉnh/thành phố trước' 
+                          : addressLoading 
+                            ? 'Đang tải...' 
+                            : 'Chọn quận/huyện'}
+                      </option>
+                      {districts.map(district => (
+                        <option key={district.code} value={district.name}>{district.name}</option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -427,11 +515,17 @@ const Checkout = () => {
                     <Form.Select
                       value={shippingInfo.ward}
                       onChange={(e) => handleInputChange('ward', e.target.value)}
-                      disabled={!shippingInfo.district}
+                      disabled={!shippingInfo.districtCode || addressLoading}
                     >
-                      <option value="">Chọn phường/xã</option>
-                      {shippingInfo.district && wards[shippingInfo.district]?.map(ward => (
-                        <option key={ward} value={ward}>{ward}</option>
+                      <option value="">
+                        {!shippingInfo.districtCode 
+                          ? 'Vui lòng chọn quận/huyện trước' 
+                          : addressLoading 
+                            ? 'Đang tải...' 
+                            : 'Chọn phường/xã'}
+                      </option>
+                      {wards.map(ward => (
+                        <option key={ward.code} value={ward.name}>{ward.name}</option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -500,7 +594,12 @@ const Checkout = () => {
                       <span className="shipping-desc">1-2 ngày làm việc</span>
                     </div>
                     <div className="shipping-fee">
-                      50,000đ
+                      {(() => {
+                        const standardFee = calculateShippingFeeByCity(shippingInfo.city);
+                        const expressFee = standardFee + 30000;
+                        
+                        return `${formatPrice(expressFee)}đ`;
+                      })()}
                     </div>
                   </label>
                 </div>

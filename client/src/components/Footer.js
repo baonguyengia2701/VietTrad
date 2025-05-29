@@ -35,7 +35,7 @@ const Footer = () => {
               <h3 className="footer-heading">Khám phá</h3>
               <ul className="footer-links">
                 <li><Link to="/products">Sản phẩm</Link></li>
-                <li><Link to="/heritage">Di sản Việt Nam</Link></li>
+                <li><Link to="/di-san">Di sản Việt Nam</Link></li>
                 <li><Link to="/about">Giới thiệu</Link></li>
                 <li><Link to="/contact">Liên hệ</Link></li>
               </ul>
