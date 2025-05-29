@@ -19,13 +19,13 @@ const Footer = () => {
                 đậm đà bản sắc văn hóa Việt Nam
               </p>
               <div className="social-icons">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.facebook.com/baodz2701/" target="_blank" rel="noopener noreferrer">
                   <i className="icon-facebook"></i>
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/baoyeutminhvcl/" target="_blank" rel="noopener noreferrer">
                   <i className="icon-instagram"></i>
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.youtube.com/watch?v=liQPn9zCVNE" target="_blank" rel="noopener noreferrer">
                   <i className="icon-youtube"></i>
                 </a>
               </div>
@@ -54,9 +54,9 @@ const Footer = () => {
             <div className="footer-column">
               <h3 className="footer-heading">Liên hệ</h3>
               <address className="footer-contact">
-                <p><i className="icon-location"></i> 123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh</p>
-                <p><i className="icon-phone"></i> +84 (28) 3829 1234</p>
-                <p><i className="icon-mail"></i> info@viettrad.vn</p>
+                <p><i className="icon-location"></i> CT3C-X2 Khu đô thị Bắc Linh Đàm, Hà Nội</p>
+                <p><i className="icon-phone"></i> 0334133154</p>
+                <p><i className="icon-mail"></i> baonguyengia2701@gmail.com</p>
               </address>
             </div>
           </div>

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './Register.scss';
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { register, currentUser } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -10,6 +13,15 @@ const Register = () => {
     confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // Kiểm tra nếu đã đăng nhập rồi thì chuyển hướng về trang chủ
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/');
+    }
+  }, [currentUser, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,6 +29,17 @@ const Register = () => {
       ...formData,
       [name]: value
     });
+    // Xóa lỗi khi user bắt đầu nhập lại
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
+    // Xóa lỗi API khi user thay đổi form
+    if (apiError) {
+      setApiError('');
+    }
   };
 
   const validateForm = () => {
@@ -43,11 +66,20 @@ const Register = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Submit registration request here
-      console.log('Form submitted', formData);
+      try {
+        setLoading(true);
+        setApiError('');
+        // Gọi API đăng ký
+        await register(formData.fullName, formData.email, formData.password);
+        // No need to navigate here - useEffect will handle it
+      } catch (error) {
+        setApiError(error.toString());
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -60,6 +92,12 @@ const Register = () => {
             <p>Tạo tài khoản để trải nghiệm dịch vụ của VietTrad</p>
           </div>
 
+          {apiError && (
+            <div className="alert alert-danger" role="alert">
+              {apiError}
+            </div>
+          )}
+
           <form className="register-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="fullName">Họ và tên</label>
@@ -71,6 +109,7 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Nhập họ và tên"
                 className={errors.fullName ? 'error' : ''}
+                disabled={loading}
               />
               {errors.fullName && <span className="error-message">{errors.fullName}</span>}
             </div>
@@ -85,6 +124,7 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Nhập địa chỉ email"
                 className={errors.email ? 'error' : ''}
+                disabled={loading}
               />
               {errors.email && <span className="error-message">{errors.email}</span>}
             </div>
@@ -99,6 +139,7 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Nhập mật khẩu"
                 className={errors.password ? 'error' : ''}
+                disabled={loading}
               />
               {errors.password && <span className="error-message">{errors.password}</span>}
             </div>
@@ -113,11 +154,18 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Nhập lại mật khẩu"
                 className={errors.confirmPassword ? 'error' : ''}
+                disabled={loading}
               />
               {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
             </div>
 
-            <button type="submit" className="btn btn-primary btn-register">Đăng ký</button>
+            <button 
+              type="submit" 
+              className="btn btn-primary btn-register"
+              disabled={loading}
+            >
+              {loading ? 'Đang xử lý...' : 'Đăng ký'}
+            </button>
           </form>
 
           <div className="register-footer">

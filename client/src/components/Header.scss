@@ -56,23 +56,34 @@ $body-font: 'Roboto', sans-serif;
   }
 
   .search-bar {
-    display: flex;
-    flex: 0 1 40%;
-    max-width: 500px;
     position: relative;
-    
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+    transition: all 0.3s ease;
+
+    &.expanded {
+      max-width: 600px;
+    }
+
     input {
       width: 100%;
       padding: 10px 40px 10px 15px;
-      border: 1px solid $light-beige;
-      border-radius: 4px;
-      font-size: 0.95rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 14px;
+      background-color: #f8f9fa;
       transition: all 0.3s ease;
-      
+
       &:focus {
         outline: none;
-        border-color: $primary-gold;
-        box-shadow: 0 0 0 2px rgba($primary-gold, 0.2);
+        border-color: #dc3545;
+        background-color: #fff;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
+      }
+
+      &::placeholder {
+        color: #999;
       }
     }
     
@@ -83,46 +94,36 @@ $body-font: 'Roboto', sans-serif;
       transform: translateY(-50%);
       background: none;
       border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: $dark-brown;
-      font-size: 1rem;
       padding: 8px;
-      
+      cursor: pointer;
+      color: #666;
+      transition: color 0.3s ease;
+
       &:hover {
-        color: $primary-red;
+        color: #dc3545;
+      }
+
+      i {
+        font-size: 16px;
       }
     }
     
     // Responsive search
-    @media (max-width: 992px) {
-      &.expanded {
-        position: absolute;
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1010;
-        width: 90%;
-        max-width: 90%;
-        animation: slideDown 0.3s forwards;
-        display: flex;
+    @media (max-width: 768px) {
+      margin: 10px 0;
+      max-width: 100%;
+
+      input {
+        padding: 8px 35px 8px 12px;
+        font-size: 13px;
       }
-      
-      &:not(.expanded) {
-        display: none;
-      }
-    }
-    
-    @keyframes slideDown {
-      0% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
+
+      .search-button {
+        padding: 6px;
+        
+        i {
+          font-size: 14px;
+        }
       }
     }
   }
@@ -263,7 +264,7 @@ $body-font: 'Roboto', sans-serif;
         background-color: white;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         border-radius: 4px;
-        min-width: 160px;
+        min-width: 230px;
         z-index: 1000;
         animation: fadeIn 0.2s forwards;
         
@@ -277,6 +278,28 @@ $body-font: 'Roboto', sans-serif;
           background-color: white;
           transform: rotate(45deg);
           z-index: -1;
+        }
+        
+        .dropdown-header {
+          padding: 12px 15px;
+          border-bottom: 1px solid rgba($secondary-brown, 0.1);
+          
+          h4 {
+            margin: 0;
+            font-size: 0.85rem;
+            color: $dark-brown;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+        
+        .dropdown-user-name {
+          padding: 12px 15px;
+          font-weight: 600;
+          color: $primary-red;
+          font-size: 1rem;
+          border-bottom: 1px solid rgba($secondary-brown, 0.1);
         }
         
         .dropdown-item {
@@ -296,20 +319,31 @@ $body-font: 'Roboto', sans-serif;
             }
           }
           
-          &:first-child {
-            a {
-              border-radius: 4px 4px 0 0;
+          .logout-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            color: $dark-brown;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            
+            &:hover {
+              background-color: rgba($primary-red, 0.05);
+              color: $primary-red;
             }
           }
           
           &:last-child {
-            a {
-              border-radius: 0 0 4px 4px;
+            border-top: 1px solid rgba($secondary-brown, 0.1);
+            
+            a, .logout-btn {
+              color: $primary-red;
+              font-weight: 500;
             }
-          }
-          
-          &:not(:last-child) {
-            border-bottom: 1px solid rgba($secondary-brown, 0.1);
           }
         }
       }
@@ -361,10 +395,6 @@ $body-font: 'Roboto', sans-serif;
     // Show search icon on mobile
     .search-icon {
       display: block;
-    }
-    
-    .header-bottom {
-      display: none;
     }
     
     .main-nav {
