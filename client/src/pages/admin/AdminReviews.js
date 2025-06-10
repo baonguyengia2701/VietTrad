@@ -45,6 +45,7 @@ const AdminReviews = () => {
       if (filters.product) queryFilters.product = filters.product;
       if (filters.user) queryFilters.user = filters.user;
 
+      // For admin, don't add default isApproved filter to see all reviews
       const response = await reviewService.getAllReviews(currentPage, pageSize, queryFilters);
       
       if (response.success) {
@@ -232,8 +233,12 @@ const AdminReviews = () => {
 
   return (
     <div className="admin-reviews">
-      <div className="admin-header">
-        <h1>Quản lý đánh giá</h1>
+      <div className="page-header">
+        <div className="header-left">
+          <h1>Quản Lý Đánh Giá</h1>
+          <p>Quản lý tất cả đánh giá sản phẩm trong hệ thống</p>
+        </div>
+        <div className="header-right">
         <div className="header-stats">
           <div className="stat-item">
             <span className="stat-number">{totalReviews}</span>
@@ -246,6 +251,7 @@ const AdminReviews = () => {
           <div className="stat-item">
             <span className="stat-number">{reviews.filter(r => !r.isApproved).length}</span>
             <span className="stat-label">Chờ duyệt</span>
+            </div>
           </div>
         </div>
       </div>
@@ -342,9 +348,20 @@ const AdminReviews = () => {
                 {reviews.map((review) => (
                   <tr key={review._id}>
                     <td>
-                      <div className="user-info">
-                        <span className="user-name">{review.user?.name || 'N/A'}</span>
-                        <span className="user-email">{review.user?.email || 'N/A'}</span>
+                      <div className="user-info" style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '4px' 
+                      }}>
+                        <span className="user-name" style={{ 
+                          fontWeight: '600', 
+                          color: '#343a40', 
+                          fontSize: '0.9rem' 
+                        }}>{review.user?.name || 'N/A'}</span>
+                        <span className="user-email" style={{ 
+                          color: '#6c757d', 
+                          fontSize: '0.8rem' 
+                        }}>{review.user?.email || 'N/A'}</span>
                       </div>
                     </td>
                     <td>

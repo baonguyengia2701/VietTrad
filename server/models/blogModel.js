@@ -37,7 +37,7 @@ const blogSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['làng gốm', 'làng dệt', 'làng dao', 'làng vàng bạc', 'làng thêu', 'khác'],
+    enum: ['làng gốm', 'làng dệt', 'làng dao', 'làng vàng bạc', 'làng thêu', 'khác','làng lụa'],
     default: 'khác'
   },
   tags: [{

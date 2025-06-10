@@ -21,7 +21,7 @@ const Home = () => {
             <p>Khám phá những sản phẩm mang đậm bản sắc văn hóa và nghệ thuật truyền thống Việt Nam</p>
             <div className="hero-buttons">
               <Link to="/products" className="btn btn-primary">Khám phá sản phẩm</Link>
-              <Link to="/di-san" className="btn btn-outline">Tìm hiểu làng nghề</Link>
+              <Link to="/lang-nghe" className="btn btn-outline">Tìm hiểu làng nghề</Link>
             </div>
           </div>
         </div>

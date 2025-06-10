@@ -45,8 +45,59 @@ const { protect, admin } = require('../middleware/authMiddleware');
  *         name:
  *           type: string
  *           description: Brand name
+ *         description:
+ *           type: string
+ *           description: Brand description
+ *         logo:
+ *           type: string
+ *           description: Brand logo URL
+ *         website:
+ *           type: string
+ *           description: Brand website URL
+ *         order:
+ *           type: number
+ *           description: Display order
+ *         isActive:
+ *           type: boolean
+ *           description: Whether brand is active
  *       example:
  *         name: "Làng nghề Bát Tràng"
+ *         description: "Thương hiệu gốm sứ truyền thống từ làng Bát Tràng"
+ *         logo: "https://example.com/logo.jpg"
+ *         website: "https://battrang.com"
+ *         order: 1
+ *         isActive: true
+ *     UpdateBrand:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Brand name
+ *         slug:
+ *           type: string
+ *           description: Brand slug for SEO
+ *         description:
+ *           type: string
+ *           description: Brand description
+ *         logo:
+ *           type: string
+ *           description: Brand logo URL
+ *         website:
+ *           type: string
+ *           description: Brand website URL
+ *         isActive:
+ *           type: boolean
+ *           description: Whether brand is active
+ *         order:
+ *           type: number
+ *           description: Display order
+ *       example:
+ *         name: "Làng nghề Bát Tràng"
+ *         description: "Thương hiệu gốm sứ truyền thống từ làng Bát Tràng"
+ *         logo: "https://example.com/logo.jpg"
+ *         website: "https://battrang.com"
+ *         order: 1
+ *         isActive: true
  */
 
 /**
@@ -186,11 +237,13 @@ router.get('/slug/:slug', async (req, res) => {
  */
 router.post('/', protect, admin, async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, description, logo, website, order, isActive } = req.body;
 
-    // Auto-generate slug from name
+    // Auto-generate slug from name with better Vietnamese support
     const slug = name
       .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
       .replace(/[^a-zA-Z0-9\s]/g, '')
       .replace(/\s+/g, '-')
       .trim('-');
@@ -209,11 +262,11 @@ router.post('/', protect, admin, async (req, res) => {
     const brand = new Brand({
       name,
       slug,
-      description: '',
-      logo: '',
-      website: '',
-      order: 0,
-      isActive: true
+      description: description || '',
+      logo: logo || '',
+      website: website || '',
+      order: order || 0,
+      isActive: isActive !== undefined ? isActive : true
     });
 
     const createdBrand = await brand.save();
@@ -244,7 +297,7 @@ router.post('/', protect, admin, async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateBrand'
+ *             $ref: '#/components/schemas/UpdateBrand'
  *     responses:
  *       200:
  *         description: Brand updated successfully
@@ -267,20 +320,36 @@ router.put('/:id', protect, admin, async (req, res) => {
 
     const { name, slug, description, logo, website, order, isActive } = req.body;
 
-    // Check if name or slug conflicts with other brands
-    if (name || slug) {
-      const conflictQuery = {
-        _id: { $ne: req.params.id }
-      };
-      
-      if (name && name !== brand.name) {
-        conflictQuery.name = name;
-      }
-      
-      if (slug && slug !== brand.slug) {
-        conflictQuery.slug = slug;
-      }
+    // Auto-generate slug if name is provided and different from current name
+    let newSlug = slug;
+    if (name && name !== brand.name && !slug) {
+      newSlug = name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .trim('-');
+    }
 
+    // Check if name or slug conflicts with other brands (only if they're different from current values)
+    const conflictQuery = {
+      _id: { $ne: req.params.id }
+    };
+    
+    let hasConflictCheck = false;
+    
+    if (name && name !== brand.name) {
+      conflictQuery.name = name;
+      hasConflictCheck = true;
+    }
+    
+    if (newSlug && newSlug !== brand.slug) {
+      conflictQuery.slug = newSlug;
+      hasConflictCheck = true;
+    }
+
+    if (hasConflictCheck) {
       const existingBrand = await Brand.findOne(conflictQuery);
       if (existingBrand) {
         return res.status(400).json({ 
@@ -289,9 +358,9 @@ router.put('/:id', protect, admin, async (req, res) => {
       }
     }
 
-    // Update fields
-    if (name) brand.name = name;
-    if (slug) brand.slug = slug;
+    // Update fields only if they are provided and different
+    if (name !== undefined) brand.name = name;
+    if (newSlug !== undefined) brand.slug = newSlug;
     if (description !== undefined) brand.description = description;
     if (logo !== undefined) brand.logo = logo;
     if (website !== undefined) brand.website = website;

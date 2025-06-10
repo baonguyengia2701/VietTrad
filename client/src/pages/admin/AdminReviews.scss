@@ -11,50 +11,61 @@ $border-color: #dee2e6;
 $text-muted: #6c757d;
 
 .admin-reviews {
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 2rem;
 
-  .admin-header {
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
-    padding: 20px 30px;
-    border-radius: 12px;
-    color: white;
-    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+    align-items: flex-start;
 
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin: 0;
-      color: white;
+    .header-left {
+      h1 {
+        color: #2c3e50;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        color: #6c757d;
+        font-size: 1rem;
+        margin: 0;
+      }
     }
 
-    .header-stats {
-      display: flex;
-      gap: 30px;
+    .header-right {
+      .header-stats {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
 
-      .stat-item {
-        text-align: center;
-        
-        .stat-number {
-          display: block;
-          font-size: 1.8rem;
-          font-weight: 700;
-          color: white;
-          line-height: 1;
-        }
-        
-        .stat-label {
-          display: block;
-          font-size: 0.85rem;
-          color: rgba(255, 255, 255, 0.9);
-          margin-top: 5px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+        .stat-item {
+          text-align: center;
+          background: #f8f9fa;
+          padding: 1rem 1.5rem;
+          border-radius: 8px;
+          border: 1px solid #e9ecef;
+          
+          .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $primary-color;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+          }
+          
+          .stat-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+          }
         }
       }
     }
@@ -717,20 +728,33 @@ $text-muted: #6c757d;
 
 @media (max-width: 768px) {
   .admin-reviews {
-    padding: 15px;
+    padding: 1rem;
 
-    .admin-header {
-      padding: 15px 20px;
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
 
-      h1 {
-        font-size: 1.4rem;
+      .header-left h1 {
+        font-size: 1.5rem;
       }
 
-      .header-stats {
-        gap: 20px;
+      .header-right {
+        width: 100%;
 
-        .stat-item .stat-number {
-          font-size: 1.4rem;
+        .header-stats {
+          gap: 1rem;
+          flex-wrap: wrap;
+
+          .stat-item {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.75rem 1rem;
+            
+            .stat-number {
+              font-size: 1.25rem;
+            }
+          }
         }
       }
     }

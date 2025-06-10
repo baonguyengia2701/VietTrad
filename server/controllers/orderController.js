@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
+const InventoryTransaction = require('../models/inventoryModel');
 const { handleOrderStatusChange, updateSoldCount } = require('../utils/orderUtils');
 
 // @desc    Create new order
@@ -122,10 +123,15 @@ const createOrder = asyncHandler(async (req, res) => {
     const createdOrder = await order.save();
     console.log('Order created successfully:', createdOrder._id);
 
-    // Update product stock
+    // Update product stock and create inventory transactions
     for (let item of orderItems) {
+      const product = await Product.findById(item.product);
+      const previousStock = product.countInStock;
+      const newStock = previousStock - item.quantity;
+
+      // Update product stock
       await Product.findByIdAndUpdate(
-        item.product, // Đã là ObjectId string từ middleware
+        item.product,
         {
           $inc: { 
             countInStock: -item.quantity
@@ -133,6 +139,20 @@ const createOrder = asyncHandler(async (req, res) => {
           }
         }
       );
+
+      // Create inventory transaction record
+      await InventoryTransaction.create({
+        product: item.product,
+        type: 'out',
+        quantity: item.quantity,
+        reason: 'Bán hàng',
+        note: `Đơn hàng #${orderNumber}`,
+        previousStock,
+        newStock,
+        user: req.user._id,
+        order: createdOrder._id
+      });
+
       console.log('Updated stock for product:', item.product);
     }
 
@@ -466,7 +486,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     const newStatus = status;
 
     // Sử dụng utility function để xử lý thay đổi trạng thái
-    await handleOrderStatusChange(order.orderItems, oldStatus, newStatus);
+    await handleOrderStatusChange(order.orderItems, oldStatus, newStatus, order._id, req.user._id);
 
     order.status = status;
     
@@ -532,21 +552,12 @@ const cancelOrder = asyncHandler(async (req, res) => {
       });
     }
 
+    const oldStatus = order.status;
     order.status = 'cancelled';
     order.cancelReason = reason || '';
 
-    // Restore product stock - sold sẽ được xử lý trong updateOrderStatus logic
-    for (let item of order.orderItems) {
-      await Product.findByIdAndUpdate(
-        item.product,
-        {
-          $inc: { 
-            countInStock: item.quantity
-            // Không trừ sold ở đây nữa vì đã xử lý trong updateOrderStatus
-          }
-        }
-      );
-    }
+    // Sử dụng utility function để xử lý thay đổi trạng thái
+    await handleOrderStatusChange(order.orderItems, oldStatus, 'cancelled', order._id, req.user._id);
 
     const updatedOrder = await order.save();
 

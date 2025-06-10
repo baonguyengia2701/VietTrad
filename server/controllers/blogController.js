@@ -60,17 +60,32 @@ const getBlogs = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get single blog by slug
-// @route   GET /api/blogs/:slug
-// @access  Public
+// @desc    Get single blog by slug or ID
+// @route   GET /api/blogs/:identifier
+// @access  Public (for slug) / Private/Admin (for ID)
 const getBlogBySlug = asyncHandler(async (req, res) => {
   try {
-    const blog = await Blog.findOne({ 
-      slug: req.params.slug, 
-      isPublished: true 
-    })
-      .populate('author', 'name email avatar')
-      .populate('comments.user', 'name avatar');
+    const { identifier } = req.params;
+    let blog;
+
+    // Check if identifier is MongoDB ObjectId format (24 hex characters)
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(identifier);
+    console.log(`Getting blog by identifier: ${identifier}, isObjectId: ${isObjectId}`);
+
+    if (isObjectId) {
+      // Admin request: get by ID, including unpublished blogs
+      blog = await Blog.findById(identifier)
+        .populate('author', 'name email avatar')
+        .populate('comments.user', 'name avatar');
+    } else {
+      // Public request: get by slug, only published blogs
+      blog = await Blog.findOne({ 
+        slug: identifier, 
+        isPublished: true 
+      })
+        .populate('author', 'name email avatar')
+        .populate('comments.user', 'name avatar');
+    }
 
     if (!blog) {
       return res.status(404).json({
@@ -79,8 +94,10 @@ const getBlogBySlug = asyncHandler(async (req, res) => {
       });
     }
 
-    // Increment views
-    await blog.incrementViews();
+    // Only increment views for public requests (slug-based)
+    if (!isObjectId) {
+      await blog.incrementViews();
+    }
 
     // Get related blogs
     const relatedBlogs = await Blog.find({
@@ -103,7 +120,7 @@ const getBlogBySlug = asyncHandler(async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get blog by slug error:', error);
+    console.error('Get blog error:', error);
     res.status(500).json({
       success: false,
       message: 'Không thể lấy bài viết: ' + error.message
@@ -276,9 +293,13 @@ const updateBlog = asyncHandler(async (req, res) => {
       });
     }
 
+    // Prepare update data - exclude author field to prevent overwriting
+    const updateData = { ...req.body };
+    delete updateData.author; // Remove author field from request body to preserve original author
+
     const updatedBlog = await Blog.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     ).populate('author', 'name email');
 

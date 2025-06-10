@@ -19,7 +19,7 @@ const BlogList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
 
-  const pageSize = 12;
+  const pageSize = 6;
 
   // Load initial data
   useEffect(() => {

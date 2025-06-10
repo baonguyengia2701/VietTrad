@@ -1,102 +1,141 @@
-import api from './api';
+// API base URL - configure this in your environment
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+// Helper function for API calls
+const apiCall = async (endpoint, options = {}) => {
+  try {
+    const url = `${API_BASE_URL}${endpoint}`;
+    
+    // Get auth token from userInfo
+    const userInfo = localStorage.getItem('userInfo');
+    let token = null;
+    if (userInfo) {
+      try {
+        const parsed = JSON.parse(userInfo);
+        token = parsed.accessToken; // Fix: use accessToken instead of token
+      } catch (error) {
+        console.error('Error parsing userInfo:', error);
+      }
+    }
+    
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }), // Add auth header if token exists
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    const response = await fetch(url, config);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data; // Return data directly instead of wrapping it
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
+};
 
 export const blogService = {
   // Get all blogs with pagination and filters
-  async getBlogs(params = {}) {
-    try {
-      const queryString = new URLSearchParams(params).toString();
-      const response = await api.get(`/blogs?${queryString}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể lấy danh sách bài viết';
+  getAllBlogs: async (page = 1, limit = 12, category = '') => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+    
+    if (category) {
+      params.set('category', category);
     }
+    
+    return await apiCall(`/blogs?${params.toString()}`);
   },
 
-  // Get single blog by slug
-  async getBlogBySlug(slug) {
-    try {
-      const response = await api.get(`/blogs/${slug}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể lấy bài viết';
-    }
+  // Get blog by slug
+  getBlogBySlug: async (slug) => {
+    return await apiCall(`/blogs/${slug}`);
   },
 
-  // Get featured blogs
-  async getFeaturedBlogs(limit = 6) {
-    try {
-      const response = await api.get(`/blogs/featured?limit=${limit}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể lấy bài viết nổi bật';
-    }
+  // Search blogs
+  searchBlogs: async (query, page = 1, limit = 10) => {
+    const params = new URLSearchParams({
+      search: query,
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+    
+    return await apiCall(`/blogs?${params.toString()}`);
   },
 
   // Get latest blogs
-  async getLatestBlogs(limit = 5) {
-    try {
-      const response = await api.get(`/blogs/latest?limit=${limit}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể lấy bài viết mới nhất';
-    }
+  getLatestBlogs: async (limit = 4) => {
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+    });
+    
+    return await apiCall(`/blogs/latest?${params.toString()}`);
+  },
+
+  // Get featured blogs
+  getFeaturedBlogs: async (limit = 6) => {
+    const params = new URLSearchParams({
+      limit: limit.toString(),
+    });
+    
+    return await apiCall(`/blogs/featured?${params.toString()}`);
   },
 
   // Get blog categories
-  async getBlogCategories() {
-    try {
-      const response = await api.get('/blogs/categories');
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể lấy danh mục';
-    }
+  getCategories: async () => {
+    return await apiCall('/blogs/categories');
+  },
+
+  // Get blogs by category
+  getBlogsByCategory: async (categoryId, page = 1, limit = 10) => {
+    return await blogService.getAllBlogs(page, limit, categoryId);
   },
 
   // Add comment to blog
-  async addComment(slug, commentData) {
-    try {
-      const response = await api.post(`/blogs/${slug}/comments`, commentData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể thêm bình luận';
-    }
+  addComment: async (slug, commentData) => {
+    return await apiCall(`/blogs/${slug}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(commentData),
+    });
   },
 
-  // Admin functions
-  async createBlog(blogData) {
-    try {
-      const response = await api.post('/blogs', blogData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể tạo bài viết';
-    }
+  // Create new blog
+  createBlog: async (blogData) => {
+    return await apiCall('/blogs', {
+      method: 'POST',
+      body: JSON.stringify(blogData),
+    });
   },
 
-  async updateBlog(id, blogData) {
-    try {
-      const response = await api.put(`/blogs/${id}`, blogData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể cập nhật bài viết';
-    }
+  // Update existing blog
+  updateBlog: async (id, blogData) => {
+    return await apiCall(`/blogs/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(blogData),
+    });
   },
 
-  async deleteBlog(id) {
-    try {
-      const response = await api.delete(`/blogs/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể xóa bài viết';
-    }
+  // Delete blog
+  deleteBlog: async (id) => {
+    return await apiCall(`/blogs/${id}`, {
+      method: 'DELETE',
+    });
   },
 
-  async togglePublishStatus(id) {
-    try {
-      const response = await api.patch(`/blogs/${id}/publish`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Không thể thay đổi trạng thái bài viết';
-    }
+  // Toggle publish status
+  togglePublishStatus: async (id) => {
+    return await apiCall(`/blogs/${id}/publish`, {
+      method: 'PATCH',
+    });
   }
 };
 

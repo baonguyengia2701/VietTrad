@@ -421,19 +421,21 @@ router.route('/')
   .get(getBlogs)
   .post(protect, admin, createBlog);
 
+// Specific routes first (before dynamic params)
 router.get('/featured', getFeaturedBlogs);
 router.get('/latest', getLatestBlogs);
 router.get('/categories', getBlogCategories);
 
-// Blog detail and comments
-router.get('/:slug', getBlogBySlug);
-router.post('/:slug/comments', addComment);
+// Admin routes (specific admin endpoints)
+router.patch('/:id/publish', protect, admin, togglePublishStatus);
 
-// Admin routes
+// Admin routes for CRUD operations
 router.route('/:id')
   .put(protect, admin, updateBlog)
   .delete(protect, admin, deleteBlog);
 
-router.patch('/:id/publish', protect, admin, togglePublishStatus);
+// Blog detail and comments (must be last since it uses dynamic params)
+router.get('/:identifier', getBlogBySlug);
+router.post('/:slug/comments', addComment);
 
 module.exports = router; 
