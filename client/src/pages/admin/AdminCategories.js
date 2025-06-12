@@ -212,7 +212,7 @@ const AdminCategories = () => {
   }
 
   return (
-    <div className="admin-categories">
+    <div className="admin-categories admin-page">
       <div className="page-header">
         <div className="header-left">
           <h1>Quản Lý Danh Mục</h1>

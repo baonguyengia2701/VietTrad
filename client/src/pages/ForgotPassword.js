@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './ForgotPassword.scss';
 
 const ForgotPassword = () => {
@@ -12,7 +13,7 @@ const ForgotPassword = () => {
     return /\S+@\S+\.\S+/.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!email) {
@@ -28,13 +29,30 @@ const ForgotPassword = () => {
     setError('');
     setIsLoading(true);
     
-    // Mô phỏng gửi yêu cầu đặt lại mật khẩu
-    setTimeout(() => {
-      // Ở đây sẽ là API call để gửi email trong ứng dụng thực tế
-      console.log('Đã gửi yêu cầu đặt lại mật khẩu đến:', email);
-      setIsLoading(false);
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const { data } = await axios.post(
+        '/api/users/forgot-password',
+        { email },
+        config
+      );
+
+      console.log('Đã gửi yêu cầu đặt lại mật khẩu thành công:', data.message);
       setIsSubmitted(true);
-    }, 1500);
+    } catch (error) {
+      const message =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -346,6 +346,64 @@ const deleteBlog = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get all blogs for admin (including drafts) with pagination
+// @route   GET /api/blogs/admin
+// @access  Private/Admin
+const getAllBlogsAdmin = asyncHandler(async (req, res) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const pageSize = Number(req.query.limit) || 12;
+    const category = req.query.category;
+    const search = req.query.search;
+    const sortBy = req.query.sortBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+
+    // Build query - NO isPublished filter for admin
+    let query = {};
+
+    if (category && category !== 'all') {
+      query.category = category;
+    }
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { excerpt: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } }
+      ];
+    }
+
+    // Get total count
+    const count = await Blog.countDocuments(query);
+
+    // Get blogs with pagination
+    const blogs = await Blog.find(query)
+      .populate('author', 'name email')
+      .select('-content -comments')
+      .sort({ [sortBy]: sortOrder })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    res.json({
+      success: true,
+      data: {
+        blogs,
+        page,
+        pages: Math.ceil(count / pageSize),
+        total: count,
+        hasNextPage: page < Math.ceil(count / pageSize),
+        hasPrevPage: page > 1
+      }
+    });
+  } catch (error) {
+    console.error('Get admin blogs error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Không thể lấy danh sách bài viết: ' + error.message
+    });
+  }
+});
+
 // @desc    Toggle blog publish status (Admin only)
 // @route   PATCH /api/blogs/:id/publish
 // @access  Private/Admin
@@ -384,6 +442,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 
 module.exports = {
   getBlogs,
+  getAllBlogsAdmin,
   getBlogBySlug,
   getFeaturedBlogs,
   getLatestBlogs,

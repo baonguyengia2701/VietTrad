@@ -1,4 +1,21 @@
 // API Configuration
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL || 'https://viettrad-backend-xxxxx-uc.a.run.app'
+  : 'http://localhost:5000';
+
+export const API_ENDPOINTS = {
+  AUTH: '/api/auth',
+  USERS: '/api/users',
+  PRODUCTS: '/api/products',
+  ORDERS: '/api/orders',
+  CART: '/api/cart',
+  REVIEWS: '/api/reviews',
+  CATEGORIES: '/api/categories'
+};
+
+export default API_BASE_URL;
+
+// API Configuration
 export const API_CONFIG = {
   BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
   TIMEOUT: parseInt(process.env.REACT_APP_API_TIMEOUT) || 10000,
@@ -8,31 +25,6 @@ export const API_CONFIG = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-};
-
-// API Endpoints
-export const API_ENDPOINTS = {
-  BLOGS: {
-    BASE: '/blogs',
-    BY_SLUG: (slug) => `/blogs/${slug}`,
-    RELATED: (id, limit = 6) => `/blogs/${id}/related?limit=${limit}`,
-    LATEST: (limit = 4) => `/blogs/latest?limit=${limit}`,
-    CATEGORIES: '/blogs/categories',
-    SEARCH: (query, page = 1, limit = 10) => 
-      `/blogs/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
-    BY_CATEGORY: (categoryId, page = 1, limit = 10) => 
-      `/blogs/category/${categoryId}?page=${page}&limit=${limit}`,
-    FEATURED: (limit = 6) => `/blogs/featured?limit=${limit}`,
-    COMMENTS: (slug) => `/blogs/${slug}/comments`,
-  },
-  CATEGORIES: '/categories',
-  USERS: '/users',
-  AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    REFRESH: '/auth/refresh',
-    LOGOUT: '/auth/logout',
-  }
 };
 
 // HTTP Status Codes

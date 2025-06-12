@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { orderService } from '../../services/orderService';
 import './AdminOrders.scss';
 
@@ -68,10 +67,22 @@ const AdminOrders = () => {
       if (response.success) {
         setOrders(orders.map(order => 
           order._id === orderId 
-            ? { ...order, status: newStatus, updatedAt: new Date().toISOString() }
+            ? { 
+                ...order, 
+                status: newStatus, 
+                // Nếu trạng thái là "đã nhận hàng", tự động đặt isPaid = true
+                isPaid: newStatus === 'received' ? true : order.isPaid,
+                updatedAt: new Date().toISOString() 
+              }
             : order
         ));
-        setSuccessMessage('Cập nhật trạng thái đơn hàng thành công!');
+        
+        // Hiển thị thông báo phù hợp
+        if (newStatus === 'received') {
+          setSuccessMessage('Cập nhật trạng thái thành "Đã nhận hàng" và tự động đánh dấu đã thanh toán!');
+        } else {
+          setSuccessMessage('Cập nhật trạng thái đơn hàng thành công!');
+        }
         setTimeout(() => setSuccessMessage(''), 3000);
       }
     } catch (error) {
@@ -157,6 +168,7 @@ const AdminOrders = () => {
       case 'processing': return '#6f42c1';
       case 'shipped': return '#fd7e14';
       case 'delivered': return '#28a745';
+      case 'received': return '#198754';
       case 'cancelled': return '#dc3545';
       default: return '#6c757d';
     }
@@ -169,6 +181,7 @@ const AdminOrders = () => {
       case 'processing': return 'Đang xử lý';
       case 'shipped': return 'Đã gửi hàng';
       case 'delivered': return 'Đã giao hàng';
+      case 'received': return 'Đã nhận hàng';
       case 'cancelled': return 'Đã hủy';
       default: return 'Không xác định';
     }
@@ -187,8 +200,20 @@ const AdminOrders = () => {
     return isPaid ? '#28a745' : '#ffc107';
   };
 
-  const getPaymentStatusText = (isPaid) => {
+  const getPaymentStatusText = (isPaid, orderStatus) => {
+    // Nếu đơn hàng đã nhận hàng, tự động hiển thị đã thanh toán
+    if (orderStatus === 'received') {
+      return 'Đã thanh toán';
+    }
     return isPaid ? 'Đã thanh toán' : 'Chưa thanh toán';
+  };
+
+  const getPaymentStatusColorForOrder = (isPaid, orderStatus) => {
+    // Nếu đơn hàng đã nhận hàng, tự động hiển thị màu xanh
+    if (orderStatus === 'received') {
+      return '#28a745';
+    }
+    return getPaymentStatusColor(isPaid);
   };
 
   // Filter orders locally if needed
@@ -200,7 +225,7 @@ const AdminOrders = () => {
     return matchesSearch;
   });
 
-  const statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+  const statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'received', 'cancelled'];
   const paymentMethods = ['cod', 'banking', 'momo'];
 
   if (loading && orders.length === 0) {
@@ -231,7 +256,7 @@ const AdminOrders = () => {
   }
 
   return (
-    <div className="admin-orders">
+    <div className="admin-orders admin-page">
       <div className="page-header">
         <div className="header-left">
           <h1>Quản Lý Đơn Hàng</h1>
@@ -362,9 +387,9 @@ const AdminOrders = () => {
                 <td>
                   <span 
                     className="payment-status"
-                    style={{ color: getPaymentStatusColor(order.isPaid) }}
+                    style={{ color: getPaymentStatusColorForOrder(order.isPaid, order.status) }}
                   >
-                    {getPaymentStatusText(order.isPaid)}
+                    {getPaymentStatusText(order.isPaid, order.status)}
                   </span>
                   <br />
                   <small>{getPaymentMethodText(order.paymentMethod)}</small>
@@ -476,8 +501,8 @@ const AdminOrders = () => {
                   </div>
                   <div className="detail-item">
                     <label>Trạng thái thanh toán:</label>
-                    <span style={{ color: getPaymentStatusColor(selectedOrder.isPaid) }}>
-                      {getPaymentStatusText(selectedOrder.isPaid)}
+                    <span style={{ color: getPaymentStatusColorForOrder(selectedOrder.isPaid, selectedOrder.status) }}>
+                      {getPaymentStatusText(selectedOrder.isPaid, selectedOrder.status)}
                     </span>
                   </div>
                   {selectedOrder.trackingNumber && (

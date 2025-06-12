@@ -358,9 +358,12 @@
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-top: auto;
+  margin-top: 20px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &:before {
     content: '';

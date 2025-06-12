@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import userService from '../services/userService';
 import { orderService } from '../services/orderService';
+import PasswordInput from '../components/PasswordInput';
 import './Profile.scss';
 
 const Profile = () => {
@@ -10,7 +11,7 @@ const Profile = () => {
   const { currentUser, updateUserProfile } = useAuth();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('account'); // 'account', 'orders', 'addresses', 'password'
+  const [activeTab, setActiveTab] = useState('account'); // 'account', 'orders', 'password'
   const [orders, setOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [ordersPagination, setOrdersPagination] = useState({
@@ -404,12 +405,6 @@ const Profile = () => {
                 Lịch sử đơn hàng
               </li>
               <li 
-                className={activeTab === 'addresses' ? 'active' : ''}
-                onClick={() => handleTabChange('addresses')}
-              >
-                Địa chỉ giao hàng
-              </li>
-              <li 
                 className={activeTab === 'password' ? 'active' : ''}
                 onClick={() => handleTabChange('password')}
               >
@@ -484,7 +479,7 @@ const Profile = () => {
                   </div>
 
                   <div className="form-section">
-                    <h3>Địa chỉ</h3>
+                    <h3>Địa chỉ giao hàng</h3>
                     <div className="form-group">
                       <label htmlFor="address.street">Địa chỉ</label>
                       <input
@@ -662,17 +657,7 @@ const Profile = () => {
               </div>
             )}
 
-            {activeTab === 'addresses' && (
-              <div className="addresses-section">
-                <div className="section-header">
-                  <h3>Địa chỉ giao hàng</h3>
-                  <p>Quản lý các địa chỉ giao hàng của bạn</p>
-                </div>
-                <div className="coming-soon">
-                  <p>Tính năng này sẽ được cập nhật sớm!</p>
-                </div>
-              </div>
-            )}
+
 
             {activeTab === 'password' && (
               <div className="password-section">
@@ -683,51 +668,42 @@ const Profile = () => {
                 
                 <form className="password-form" onSubmit={handlePasswordSubmit}>
                   <div className="form-group">
-                    <label htmlFor="currentPasswordTab">Mật khẩu hiện tại *</label>
-                    <input
-                      type="password"
+                    <PasswordInput
                       id="currentPasswordTab"
                       name="currentPasswordTab"
                       value={passwordForm.currentPassword}
                       onChange={handlePasswordChange}
                       disabled={passwordLoading}
                       className={passwordErrors.currentPassword ? 'error' : ''}
+                      label="Mật khẩu hiện tại *"
+                      error={passwordErrors.currentPassword}
                     />
-                    {passwordErrors.currentPassword && (
-                      <span className="error-message">{passwordErrors.currentPassword}</span>
-                    )}
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="newPasswordTab">Mật khẩu mới *</label>
-                    <input
-                      type="password"
+                    <PasswordInput
                       id="newPasswordTab"
                       name="newPasswordTab"
                       value={passwordForm.newPassword}
                       onChange={handlePasswordChange}
                       disabled={passwordLoading}
                       className={passwordErrors.newPassword ? 'error' : ''}
+                      label="Mật khẩu mới *"
+                      error={passwordErrors.newPassword}
                     />
-                    {passwordErrors.newPassword && (
-                      <span className="error-message">{passwordErrors.newPassword}</span>
-                    )}
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="confirmPasswordTab">Xác nhận mật khẩu mới *</label>
-                    <input
-                      type="password"
+                    <PasswordInput
                       id="confirmPasswordTab"
                       name="confirmPasswordTab"
                       value={passwordForm.confirmPassword}
                       onChange={handlePasswordChange}
                       disabled={passwordLoading}
                       className={passwordErrors.confirmPassword ? 'error' : ''}
+                      label="Xác nhận mật khẩu mới *"
+                      error={passwordErrors.confirmPassword}
                     />
-                    {passwordErrors.confirmPassword && (
-                      <span className="error-message">{passwordErrors.confirmPassword}</span>
-                    )}
                   </div>
 
                   <div className="form-actions">

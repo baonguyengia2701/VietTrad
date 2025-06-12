@@ -204,7 +204,7 @@ const AdminBrands = () => {
   }
 
   return (
-    <div className="admin-brands">
+    <div className="admin-brands admin-page">
       <div className="page-header">
         <div className="header-left">
           <h1>Quản Lý Thương Hiệu</h1>

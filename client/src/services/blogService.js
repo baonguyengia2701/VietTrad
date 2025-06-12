@@ -56,6 +56,24 @@ export const blogService = {
     return await apiCall(`/blogs?${params.toString()}`);
   },
 
+  // Get all blogs for admin (including drafts) with pagination and filters
+  getAllBlogsAdmin: async (page = 1, limit = 12, category = '', search = '') => {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+    
+    if (category) {
+      params.set('category', category);
+    }
+    
+    if (search) {
+      params.set('search', search);
+    }
+    
+    return await apiCall(`/blogs/admin?${params.toString()}`);
+  },
+
   // Get blog by slug
   getBlogBySlug: async (slug) => {
     return await apiCall(`/blogs/${slug}`);

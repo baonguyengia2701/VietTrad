@@ -52,11 +52,8 @@ const AdminBlogs = () => {
       
       let response;
       
-      if (searchTerm) {
-        response = await blogService.searchBlogs(searchTerm, currentPage, blogsPerPage);
-      } else {
-        response = await blogService.getAllBlogs(currentPage, blogsPerPage, filterCategory);
-      }
+      // Use admin endpoint to get all blogs including drafts
+      response = await blogService.getAllBlogsAdmin(currentPage, blogsPerPage, filterCategory, searchTerm);
       
       console.log('API Response:', response);
       
@@ -126,7 +123,7 @@ const AdminBlogs = () => {
       await blogService.togglePublishStatus(blogId);
       setBlogs(blogs.map(blog => 
         (blog._id || blog.id) === blogId 
-          ? { ...blog, published: !currentStatus, status: !currentStatus ? 'published' : 'draft' }
+          ? { ...blog, published: !currentStatus, isPublished: !currentStatus, status: !currentStatus ? 'published' : 'draft' }
           : blog
       ));
       setSuccessMessage('Cập nhật trạng thái bài viết thành công!');
@@ -155,19 +152,19 @@ const AdminBlogs = () => {
   };
 
   const getStatusColor = (blog) => {
-    if (blog.published || blog.status === 'published') return '#28a745';
+    if (blog.published || blog.isPublished || blog.status === 'published') return '#28a745';
     return '#ffc107';
   };
 
   const getStatusText = (blog) => {
-    if (blog.published || blog.status === 'published') return 'Đã xuất bản';
+    if (blog.published || blog.isPublished || blog.status === 'published') return 'Đã xuất bản';
     return 'Bản nháp';
   };
 
   const filteredBlogs = Array.isArray(blogs) ? blogs.filter(blog => {
     const matchesStatus = filterStatus === '' || 
-      (filterStatus === 'published' && (blog.published || blog.status === 'published')) ||
-      (filterStatus === 'draft' && !(blog.published || blog.status === 'published'));
+      (filterStatus === 'published' && (blog.published || blog.isPublished || blog.status === 'published')) ||
+      (filterStatus === 'draft' && !(blog.published || blog.isPublished || blog.status === 'published'));
     return matchesStatus;
   }) : [];
 
@@ -318,10 +315,10 @@ const AdminBlogs = () => {
                         </span>
                         <button
                           className="toggle-status-btn"
-                          onClick={() => handleTogglePublish(blog._id || blog.id, blog.published || blog.status === 'published')}
-                          title={blog.published || blog.status === 'published' ? 'Chuyển về bản nháp' : 'Xuất bản'}
+                          onClick={() => handleTogglePublish(blog._id || blog.id, blog.published || blog.isPublished || blog.status === 'published')}
+                                                      title={blog.published || blog.isPublished || blog.status === 'published' ? 'Chuyển về bản nháp' : 'Xuất bản'}
                         >
-                          <i className={`fas ${blog.published || blog.status === 'published' ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                                                      <i className={`fas ${blog.published || blog.isPublished || blog.status === 'published' ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                         </button>
                       </div>
                     </td>

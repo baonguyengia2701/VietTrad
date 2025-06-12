@@ -128,7 +128,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard admin-page">
       <div className="dashboard-header">
         <h1>Bảng Điều Khiển Admin</h1>
         <p>Chào mừng bạn đến với trang quản trị VietTrad</p>
@@ -206,6 +206,10 @@ const AdminDashboard = () => {
           <Link to="/admin/brands" className="action-card">
             <i className="fas fa-award"></i>
             <span>Quản Lý Thương Hiệu</span>
+          </Link>
+          <Link to="/admin/inventory" className="action-card">
+            <i className="fas fa-warehouse"></i>
+            <span>Quản Lý Kho</span>
           </Link>
           <button onClick={fetchDashboardStats} className="action-card refresh-card">
             <i className="fas fa-sync-alt"></i>

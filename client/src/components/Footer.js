@@ -35,21 +35,13 @@ const Footer = () => {
               <h3 className="footer-heading">Khám phá</h3>
               <ul className="footer-links">
                 <li><Link to="/products">Sản phẩm</Link></li>
-                <li><Link to="/di-san">Di sản Việt Nam</Link></li>
+                <li><Link to="/lang-nghe">Làng nghề Việt Nam</Link></li>
                 <li><Link to="/about">Giới thiệu</Link></li>
                 <li><Link to="/contact">Liên hệ</Link></li>
               </ul>
             </div>
             
-            <div className="footer-column">
-              <h3 className="footer-heading">Chính sách</h3>
-              <ul className="footer-links">
-                <li><Link to="/policies/shipping">Chính sách vận chuyển</Link></li>
-                <li><Link to="/policies/returns">Chính sách đổi trả</Link></li>
-                <li><Link to="/policies/privacy">Chính sách bảo mật</Link></li>
-                <li><Link to="/policies/terms">Điều khoản dịch vụ</Link></li>
-              </ul>
-            </div>
+
             
             <div className="footer-column">
               <h3 className="footer-heading">Liên hệ</h3>

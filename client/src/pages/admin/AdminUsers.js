@@ -272,7 +272,7 @@ const AdminUsers = () => {
   }
 
   return (
-    <div className="admin-users">
+    <div className="admin-users admin-page">
       <div className="page-header">
         <div className="header-left">
           <h1>Quản Lý Người Dùng</h1>

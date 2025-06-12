@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import PasswordInput from '../components/PasswordInput';
 import './Register.scss';
 
 const Register = () => {
@@ -130,9 +131,7 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Mật khẩu</label>
-              <input
-                type="password"
+              <PasswordInput
                 id="password"
                 name="password"
                 value={formData.password}
@@ -140,14 +139,13 @@ const Register = () => {
                 placeholder="Nhập mật khẩu"
                 className={errors.password ? 'error' : ''}
                 disabled={loading}
+                label="Mật khẩu"
+                error={errors.password}
               />
-              {errors.password && <span className="error-message">{errors.password}</span>}
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
-              <input
-                type="password"
+              <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}
@@ -155,8 +153,9 @@ const Register = () => {
                 placeholder="Nhập lại mật khẩu"
                 className={errors.confirmPassword ? 'error' : ''}
                 disabled={loading}
+                label="Xác nhận mật khẩu"
+                error={errors.confirmPassword}
               />
-              {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
             </div>
 
             <button 

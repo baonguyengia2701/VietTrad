@@ -208,7 +208,7 @@ const AdminInventory = () => {
   }
 
   return (
-    <div className="admin-inventory">
+    <div className="admin-inventory admin-page">
       {/* Enhanced Header Section */}
       <div className="inventory-header">
         <Container fluid>
