@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    
+    <button onclick="testCategories()">Test Categories API</button>
+    <button onclick="testBlogs()">Test Blogs API</button>
+    <button onclick="testBlogById()">Test Blog by ID</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        
+        function addResult(message, isSuccess = true) {
+            const div = document.createElement('div');
+            div.className = `result ${isSuccess ? 'success' : 'error'}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        async function testCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/blogs/categories`);
+                const data = await response.json();
+                addResult(`Categories API: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                addResult(`Categories API Error: ${error.message}`, false);
+            }
+        }
+        
+        async function testBlogs() {
+            try {
+                const response = await fetch(`${API_BASE}/blogs`);
+                const data = await response.json();
+                addResult(`Blogs API: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                addResult(`Blogs API Error: ${error.message}`, false);
+            }
+        }
+        
+        async function testBlogById() {
+            // Test with a mock MongoDB ObjectId
+            const testId = '507f1f77bcf86cd799439011';
+            try {
+                const response = await fetch(`${API_BASE}/blogs/${testId}`);
+                const data = await response.json();
+                addResult(`Blog by ID API: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                addResult(`Blog by ID API Error: ${error.message}`, false);
+            }
+        }
+    </script>
+</body>
+</html> 

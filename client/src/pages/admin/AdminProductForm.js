@@ -87,7 +87,7 @@ const AdminProductForm = () => {
       setError('');
 
       // Validate required fields
-      if (!formData.name || !formData.price || !formData.countInStock || !formData.category || !formData.brand) {
+      if (!formData.name || !formData.price || !formData.category || !formData.brand) {
         setError('Vui lòng điền đầy đủ các trường bắt buộc');
         return;
       }
@@ -110,9 +110,13 @@ const AdminProductForm = () => {
         images: filteredImages,
         variants: filteredVariants,
         price: parseFloat(formData.price),
-        discount: parseFloat(formData.discount) || 0,
-        countInStock: parseInt(formData.countInStock)
+        discount: parseFloat(formData.discount) || 0
       };
+
+      // Chỉ thêm countInStock khi tạo sản phẩm mới (mặc định = 0)
+      if (!isEdit) {
+        productData.countInStock = 0;
+      }
 
       if (isEdit) {
         await productService.updateProduct(id, productData);
@@ -349,17 +353,12 @@ const AdminProductForm = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="countInStock">Số lượng tồn kho *</label>
-                <input
-                  type="number"
-                  id="countInStock"
-                  name="countInStock"
-                  value={formData.countInStock}
-                  onChange={handleInputChange}
-                  min="0"
-                  required
-                  placeholder="0"
-                />
+                <label>Số lượng tồn kho</label>
+                <p className="form-note">
+                  <i className="fas fa-info-circle"></i>
+                  Số lượng tồn kho sẽ được quản lý thông qua trang "Quản lý kho". 
+                  Tồn kho hiện tại: <strong>{formData.countInStock || 0}</strong>
+                </p>
               </div>
             </div>
 

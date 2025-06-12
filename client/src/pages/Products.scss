@@ -223,6 +223,54 @@ $chevron-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox=
               background-color: #e0e0e0;
               border-radius: 2px;
               accent-color: $primary-color;
+              cursor: pointer;
+              outline: none;
+              transition: none;
+              will-change: value;
+              
+              &::-webkit-slider-thumb {
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                background: $primary-color;
+                border-radius: 50%;
+                cursor: pointer;
+                border: 2px solid white;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                transform: translateZ(0);
+                will-change: transform;
+                transition: box-shadow 0.15s ease;
+                
+                &:hover {
+                  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+                }
+              }
+              
+              &::-moz-range-thumb {
+                width: 18px;
+                height: 18px;
+                background: $primary-color;
+                border-radius: 50%;
+                cursor: pointer;
+                border: 2px solid white;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                transform: translateZ(0);
+              }
+              
+              &::-webkit-slider-track {
+                height: 4px;
+                background: linear-gradient(to right, $primary-color var(--value), #e0e0e0 var(--value));
+                border-radius: 2px;
+                transform: translateZ(0);
+              }
+              
+              &:focus {
+                outline: none;
+                
+                &::-webkit-slider-thumb {
+                  box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+                }
+              }
             }
           }
           

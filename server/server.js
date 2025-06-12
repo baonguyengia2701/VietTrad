@@ -53,7 +53,7 @@ const swaggerOptions = {
       }
     }
   },
-  apis: ['./routes/*.js']
+  apis: ['./routes/*.js', './swagger/*.js']
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -73,6 +73,8 @@ app.use('/api/cart', require('./routes/cartRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/checkout', require('./routes/checkoutRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
+app.use('/api/blogs', require('./routes/blogRoutes'));
+app.use('/api/inventory', require('./routes/inventoryRoutes'));
 
 // Error Middleware
 app.use(notFound);

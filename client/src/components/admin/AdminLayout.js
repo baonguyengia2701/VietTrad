@@ -39,6 +39,11 @@ const AdminLayout = () => {
       label: 'Quản Lý Sản Phẩm'
     },
     {
+      path: '/admin/inventory',
+      icon: 'fas fa-warehouse',
+      label: 'Quản Lý Kho'
+    },
+    {
       path: '/admin/orders',
       icon: 'fas fa-shopping-cart',
       label: 'Quản Lý Đơn Hàng'
@@ -64,9 +69,9 @@ const AdminLayout = () => {
       label: 'Quản Lý Đánh Giá'
     },
     {
-      path: '/admin/settings',
-      icon: 'fas fa-cog',
-      label: 'Cài Đặt'
+      path: '/admin/blogs',
+      icon: 'fas fa-blog',
+      label: 'Quản Lý Bài Viết'
     }
   ];
 

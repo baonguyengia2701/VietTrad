@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Container, Form } from 'react-bootstrap';
 import { Link, useSearchParams } from 'react-router-dom';
 import { productService, categoryService, brandService, transformProductsData } from '../services/productService';
@@ -17,7 +17,8 @@ const Products = () => {
   const [brands, setBrands] = useState(['all']);
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeBrand, setActiveBrand] = useState('all');
-  const [priceRange, setPriceRange] = useState(10000000); // Tăng lên 10 triệu để hiển thị tất cả sản phẩm
+  const [priceRange, setPriceRange] = useState(10000000); // Giá trị thực tế dùng để filter
+  const [sliderValue, setSliderValue] = useState(10000000); // Giá trị tạm thời của slider
   const [maxPrice, setMaxPrice] = useState(10000000); // Giá cao nhất để set cho slider
   const [sortOption, setSortOption] = useState('newest');
   const [expandedFilters, setExpandedFilters] = useState({
@@ -32,14 +33,24 @@ const Products = () => {
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const productsPerPage = 8;
+  
+  // Ref để lưu timeout cho debounce
+  const priceDebounceRef = useRef(null);
 
   useEffect(() => {
     fetchInitialData();
     
-    // Đọc sort parameter từ URL
+    // Đọc parameters từ URL
     const sortParam = searchParams.get('sort');
+    const categoryParam = searchParams.get('category');
+    
     if (sortParam && ['newest', 'price_asc', 'price_desc', 'bestseller', 'rating'].includes(sortParam)) {
       setSortOption(sortParam);
+    }
+    
+    // Set category từ URL parameter
+    if (categoryParam) {
+      setActiveCategory(categoryParam);
     }
   }, [searchParams]);
 
@@ -128,14 +139,46 @@ const Products = () => {
 
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
+    
+    // Cập nhật URL parameters
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (category !== 'all') {
+      newSearchParams.set('category', category);
+    } else {
+      newSearchParams.delete('category'); // Xóa param nếu là 'all'
+    }
+    setSearchParams(newSearchParams);
   };
+
+  // Debounced function để update priceRange
+  const debouncedPriceUpdate = useCallback((value) => {
+    if (priceDebounceRef.current) {
+      clearTimeout(priceDebounceRef.current);
+    }
+    
+    priceDebounceRef.current = setTimeout(() => {
+      setPriceRange(value);
+    }, 150); // Giảm delay xuống 150ms để responsive hơn
+  }, []);
+
+  // Xử lý thay đổi slider (không debounce để UI mượt mà)
+  const handleSliderChange = useCallback((e) => {
+    const value = Number(e.target.value);
+    
+    // Sử dụng requestAnimationFrame để update UI mượt mà hơn
+    requestAnimationFrame(() => {
+      setSliderValue(value);
+    });
+    
+    debouncedPriceUpdate(value); // Debounce cho việc filtering
+  }, [debouncedPriceUpdate]);
 
   const handleBrandClick = (brand) => {
     setActiveBrand(brand);
   };
 
   const handlePriceChange = (e) => {
-    setPriceRange(Number(e.target.value));
+    handleSliderChange(e);
   };
 
   const handleSortChange = (e) => {
@@ -286,6 +329,20 @@ const Products = () => {
     }
   };
 
+  // Cleanup timeout khi component unmount
+  useEffect(() => {
+    return () => {
+      if (priceDebounceRef.current) {
+        clearTimeout(priceDebounceRef.current);
+      }
+    };
+  }, []);
+
+  // Sync sliderValue với priceRange khi priceRange thay đổi từ nguồn khác
+  useEffect(() => {
+    setSliderValue(priceRange);
+  }, [priceRange]);
+
   // Loading state
   if (loading) {
     return (
@@ -374,7 +431,7 @@ const Products = () => {
               <div className="filter-group">
                 <div className="filter-heading" onClick={() => toggleFilter('price')}>
                   <h4>
-                    Giá (đến {formatPrice(priceRange)} đ)
+                    Giá (đến {formatPrice(sliderValue)} đ)
                     <span className={`icon ${expandedFilters.price ? 'open' : ''}`}>
                       ▼
                     </span>
@@ -387,9 +444,13 @@ const Products = () => {
                         <Form.Range 
                           min={0} 
                           max={maxPrice} 
-                          step={10000}
-                          value={priceRange}
+                          step={25000}
+                          value={sliderValue}
                           onChange={handlePriceChange}
+                          style={{ 
+                            cursor: 'pointer',
+                            background: 'transparent'
+                          }}
                         />
                       </div>
                       <div className="price-labels">

@@ -33,10 +33,9 @@ const getReviews = asyncHandler(async (req, res) => {
   // Filter by approval status
   if (req.query.isApproved !== undefined) {
     filter.isApproved = req.query.isApproved === 'true';
-  } else {
-    // Default: only show approved reviews for public
-    filter.isApproved = true;
   }
+  // Note: Remove the default filter for admin to see all reviews
+  // Admin should explicitly pass isApproved parameter if they want to filter
 
   try {
     const [reviews, total] = await Promise.all([

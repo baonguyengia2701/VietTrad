@@ -11,6 +11,9 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
+import BlogList from './pages/BlogList';
+import CraftVillageBlogs from './pages/CraftVillageBlogs';
+import BlogDetail from './pages/BlogDetail';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { CartProvider } from './contexts/CartContext';
@@ -25,6 +28,9 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminBrands from './pages/admin/AdminBrands';
 import AdminReviews from './pages/admin/AdminReviews';
+import AdminBlogs from './pages/admin/AdminBlogs';
+import AdminBlogForm from './pages/admin/AdminBlogForm';
+import AdminInventory from './pages/admin/AdminInventory';
 
 // Protected Route component
 import ProtectedRoute from './components/ProtectedRoute';
@@ -55,11 +61,15 @@ function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="products/new" element={<AdminProductForm />} />
             <Route path="products/:id/edit" element={<AdminProductForm />} />
+            <Route path="inventory" element={<AdminInventory />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="categories" element={<AdminCategories />} />
             <Route path="brands" element={<AdminBrands />} />
             <Route path="reviews" element={<AdminReviews />} />
+            <Route path="blogs" element={<AdminBlogs />} />
+            <Route path="blogs/new" element={<AdminBlogForm />} />
+            <Route path="blogs/edit/:id" element={<AdminBlogForm />} />
             {/* Add more admin routes as needed */}
           </Route>
 
@@ -87,6 +97,11 @@ function App() {
                     </ProtectedRoute>
                   } />
                   <Route path="/thank-you" element={<ThankYou />} />
+                  <Route path="/di-san" element={<BlogList />} />
+                  <Route path="/lang-nghe" element={<CraftVillageBlogs />} />
+                  <Route path="/lang-nghe/:slug" element={<BlogDetail />} />
+                  <Route path="/bai-viet/:slug" element={<BlogDetail />} />
+                  <Route path="/danh-muc/:category" element={<CraftVillageBlogs />} />
                   {/* <Route path="/products/:slug" element={<ProductDetailPage />} /> */}
                   {/* Các định tuyến khác sẽ được thêm dần */}
                   {/* 
