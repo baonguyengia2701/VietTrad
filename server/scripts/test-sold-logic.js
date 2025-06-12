@@ -14,7 +14,7 @@ const connectDB = async () => {
     
     // Test 1: Kiểm tra isSoldStatus function
     console.log('📋 Test 1: isSoldStatus function');
-    const testStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const testStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'received', 'cancelled'];
     testStatuses.forEach(status => {
       const isSold = isSoldStatus(status);
       console.log(`   ${status}: ${isSold ? '✅ Sold' : '❌ Not Sold'}`);

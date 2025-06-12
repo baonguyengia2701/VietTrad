@@ -7,7 +7,7 @@ const InventoryTransaction = require('../models/inventoryModel');
  * @returns {boolean}
  */
 const isSoldStatus = (status) => {
-  const soldStatuses = ['confirmed', 'processing', 'shipped', 'delivered'];
+  const soldStatuses = ['confirmed', 'processing', 'shipped', 'delivered', 'received'];
   return soldStatuses.includes(status);
 };
 

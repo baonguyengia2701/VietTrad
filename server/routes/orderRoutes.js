@@ -143,7 +143,7 @@ const { validateCreateOrder } = require('../middleware/orderValidation');
  *           description: Delivery date
  *         status:
  *           type: string
- *           enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+ *           enum: [pending, confirmed, processing, shipped, delivered, received, cancelled]
  *           description: Order status
  *         estimatedDelivery:
  *           type: string
@@ -240,7 +240,7 @@ const { validateCreateOrder } = require('../middleware/orderValidation');
  *         name: status
  *         schema:
  *           type: string
- *           enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+ *           enum: [pending, confirmed, processing, shipped, delivered, received, cancelled]
  *       - in: query
  *         name: paymentMethod
  *         schema:
@@ -464,7 +464,7 @@ router.put('/:id/deliver', protect, admin, updateOrderToDelivered);
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+ *                 enum: [pending, confirmed, processing, shipped, delivered, received, cancelled]
  *                 description: New order status
  *               notes:
  *                 type: string

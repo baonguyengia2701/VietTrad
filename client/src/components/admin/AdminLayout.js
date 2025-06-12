@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import './AdminLayout.scss';
+import '../../styles/admin-responsive.scss';
+import '../../styles/admin-mobile-tables.scss';
 
 const AdminLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -170,12 +172,7 @@ const AdminLayout = () => {
           </div>
 
           <div className="header-right">
-            <div className="notifications">
-              <button className="notification-btn">
-                <i className="fas fa-bell"></i>
-                <span className="notification-badge">3</span>
-              </button>
-            </div>
+            
 
             <div className="admin-profile">
               <div className="profile-info" onClick={toggleProfileDropdown}>

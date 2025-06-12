@@ -1,15 +1,6 @@
 import api from './api';
 
-const API_BASE_URL = 'http://localhost:5000/api';
 
-// Helper function to handle API responses
-const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Something went wrong');
-  }
-  return response.json();
-};
 
 // Product API calls
 export const productService = {

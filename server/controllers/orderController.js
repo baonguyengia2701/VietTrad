@@ -474,7 +474,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
       });
     }
 
-    const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'received', 'cancelled'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -489,6 +489,12 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     await handleOrderStatusChange(order.orderItems, oldStatus, newStatus, order._id, req.user._id);
 
     order.status = status;
+    
+    // Nếu trạng thái là "đã nhận hàng", tự động đặt isPaid = true
+    if (status === 'received') {
+      order.isPaid = true;
+      order.paidAt = new Date();
+    }
     
     if (notes) {
       order.notes = notes;
@@ -601,6 +607,9 @@ const getOrderStats = asyncHandler(async (req, res) => {
           },
           deliveredOrders: {
             $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] }
+          },
+          receivedOrders: {
+            $sum: { $cond: [{ $eq: ['$status', 'received'] }, 1, 0] }
           },
           cancelledOrders: {
             $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] }

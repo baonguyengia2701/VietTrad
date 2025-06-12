@@ -44,7 +44,7 @@ const Home = () => {
         <div className="container">
           <div className="heritage-content">
             <div className="heritage-text">
-              <h2 className="section-title">Câu chuyện di sản</h2>
+              <h2 className="section-title">Câu chuyện làng nghề</h2>
               <p>
                 Mỗi sản phẩm là một câu chuyện, một phần lịch sử và văn hóa Việt Nam. 
                 Chúng tôi không chỉ mang đến những sản phẩm chất lượng mà còn kể lại 
@@ -55,7 +55,7 @@ const Home = () => {
                 văn hóa truyền thống, đồng thời giúp các làng nghề có thêm nguồn thu nhập 
                 bền vững trong thời đại hiện nay.
               </p>
-              <Link to="/di-san" className="btn btn-primary">Khám phá câu chuyện</Link>
+              <Link to="/lang-nghe" className="btn btn-primary">Khám phá câu chuyện</Link>
             </div>
             <div className="heritage-image">
               <div className="image-frame">
@@ -66,19 +66,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="newsletter-section">
-        <div className="container">
-          <div className="newsletter-content">
-            <h2>Đăng ký nhận tin</h2>
-            <p>Cập nhật thông tin về sản phẩm mới, câu chuyện văn hóa và ưu đãi đặc biệt</p>
-            <form className="newsletter-form">
-              <input type="email" placeholder="Địa chỉ email của bạn" required />
-              <button type="submit" className="btn btn-primary">Đăng ký</button>
-            </form>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };

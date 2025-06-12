@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getBlogs,
+  getAllBlogsAdmin,
   getBlogBySlug,
   getFeaturedBlogs,
   getLatestBlogs,
@@ -427,6 +428,7 @@ router.get('/latest', getLatestBlogs);
 router.get('/categories', getBlogCategories);
 
 // Admin routes (specific admin endpoints)
+router.get('/admin', protect, admin, getAllBlogsAdmin);
 router.patch('/:id/publish', protect, admin, togglePublishStatus);
 
 // Admin routes for CRUD operations

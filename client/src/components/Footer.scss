@@ -42,15 +42,17 @@
   // Footer Columns
   .footer-columns {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 3rem;
     
     @media (max-width: 992px) {
       grid-template-columns: 1fr 1fr;
+      gap: 2rem;
     }
     
     @media (max-width: 576px) {
       grid-template-columns: 1fr;
+      gap: 2rem;
     }
   }
   
@@ -74,6 +76,8 @@
     margin-bottom: 1.5rem;
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    max-width: 400px;
   }
   
   // Social Icons

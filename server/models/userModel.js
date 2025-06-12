@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = mongoose.Schema(
   {
@@ -19,6 +20,12 @@ const userSchema = mongoose.Schema(
     refreshToken: {
       type: String,
       default: '',
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpire: {
+      type: Date,
     },
     phone: {
       type: String,
@@ -49,6 +56,23 @@ const userSchema = mongoose.Schema(
 // Phương thức kiểm tra mật khẩu
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Phương thức tạo reset password token
+userSchema.methods.getResetPasswordToken = function () {
+  // Tạo token ngẫu nhiên
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // Hash token và lưu vào database
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // Set thời gian hết hạn là 10 phút
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 // Middleware hash mật khẩu trước khi lưu

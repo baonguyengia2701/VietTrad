@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import PasswordInput from '../components/PasswordInput';
 import './Login.scss';
 
 const Login = () => {
@@ -124,9 +125,7 @@ const Login = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Mật khẩu</label>
-              <input
-                type="password"
+              <PasswordInput
                 id="password"
                 name="password"
                 value={formData.password}
@@ -134,8 +133,9 @@ const Login = () => {
                 placeholder="Nhập mật khẩu"
                 className={errors.password ? 'error' : ''}
                 disabled={loading}
+                label="Mật khẩu"
+                error={errors.password}
               />
-              {errors.password && <span className="error-message">{errors.password}</span>}
             </div>
 
             <div className="forgot-password">

@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
 // import ProductPage from './pages/ProductPage';
 import Products from './pages/Products';
@@ -14,8 +15,11 @@ import ThankYou from './pages/ThankYou';
 import BlogList from './pages/BlogList';
 import CraftVillageBlogs from './pages/CraftVillageBlogs';
 import BlogDetail from './pages/BlogDetail';
+import About from './pages/About';
+import Contact from './pages/Contact';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 import { CartProvider } from './contexts/CartContext';
 
 // Admin components
@@ -50,6 +54,11 @@ function App() {
   return (
     <CartProvider>
       <div className="app">
+        <ScrollToTop 
+          behavior="smooth" 
+          delay={100}
+          excludePaths={['/admin']}
+        />
         <Routes>
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={
@@ -82,7 +91,8 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password/:token" element={<ResetPassword />} />
                   <Route path="/profile" element={
                     <ProtectedRoute>
                       <Profile />
@@ -102,6 +112,8 @@ function App() {
                   <Route path="/lang-nghe/:slug" element={<BlogDetail />} />
                   <Route path="/bai-viet/:slug" element={<BlogDetail />} />
                   <Route path="/danh-muc/:category" element={<CraftVillageBlogs />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
                   {/* <Route path="/products/:slug" element={<ProductDetailPage />} /> */}
                   {/* Các định tuyến khác sẽ được thêm dần */}
                   {/* 
