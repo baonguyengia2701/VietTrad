@@ -2,7 +2,10 @@
 const config = {
   development: {
     port: process.env.PORT || 5000,
-    mongoURI: process.env.MONGO_URI || 'mongodb://localhost:27017/viettrad',
+    mongoURI: process.env.MONGO_URI || (() => {
+      console.warn('⚠️  MONGO_URI not found in .env file. Using local MongoDB as fallback.');
+      return 'mongodb://localhost:27017/viettrad';
+    })(),
     jwtSecret: process.env.JWT_SECRET || 'dev_secret_change_me',
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || 'refresh_secret_change_me',
     accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',

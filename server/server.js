@@ -1,5 +1,11 @@
+// Cấu hình dotenv TRƯỚC KHI import các module khác
+require('dotenv').config({ path: './.env' });
+
+// Debug: Kiểm tra MONGO_URI đã được load chưa
+console.log('🔍 MONGO_URI loaded:', process.env.MONGO_URI ? 'Yes' : 'No');
+console.log('🔍 MONGO_URI value:', process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 50) + '...' : 'undefined');
+
 const express = require('express');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
@@ -8,9 +14,6 @@ const path = require('path');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
-
-// Cấu hình dotenv (nếu cần)
-dotenv.config();
 
 // Kết nối database
 connectDB();
