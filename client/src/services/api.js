@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Base URL cho API backend
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL || 'https://viettradv1.onrender.com/api'
+  : 'http://localhost:5000/api';
 
 // Tạo instance axios với base URL
 const api = axios.create({
