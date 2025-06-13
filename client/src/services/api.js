@@ -2,8 +2,15 @@ import axios from 'axios';
 
 // Base URL cho API backend
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? process.env.REACT_APP_API_URL || 'https://viettrad-1.onrender.com/api'
+  ? 'https://viettrad-1.onrender.com/api'
   : 'http://localhost:5000/api';
+
+// Debug logs
+console.log('🔍 API Configuration:', {
+  NODE_ENV: process.env.NODE_ENV,
+  API_URL: API_URL,
+  REACT_APP_API_URL: process.env.REACT_APP_API_URL
+});
 
 // Tạo instance axios với base URL
 const api = axios.create({

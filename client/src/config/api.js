@@ -1,6 +1,6 @@
 // API Configuration
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? process.env.REACT_APP_API_URL || 'https://viettrad-1.onrender.com'
+  ? 'https://viettrad-1.onrender.com'
   : 'http://localhost:5000';
 
 export const API_ENDPOINTS = {
@@ -18,7 +18,7 @@ export default API_BASE_URL;
 // API Configuration
 export const API_CONFIG = {
   BASE_URL: process.env.NODE_ENV === 'production' 
-    ? (process.env.REACT_APP_API_URL || 'https://viettrad-1.onrender.com/api')
+    ? 'https://viettrad-1.onrender.com/api'
     : 'http://localhost:5000/api',
   TIMEOUT: parseInt(process.env.REACT_APP_API_TIMEOUT) || 10000,
   RETRY_ATTEMPTS: 3,
