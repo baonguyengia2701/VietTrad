@@ -11,8 +11,11 @@ RUN npm ci --only=production
 # Copy source code
 COPY . .
 
-# Expose port
-EXPOSE 5000
+# Create uploads directory
+RUN mkdir -p uploads
+
+# Expose port (Cloud Run uses PORT env variable, default 8080)
+EXPOSE 8080
 
 # Start the application
 CMD ["npm", "start"] 
