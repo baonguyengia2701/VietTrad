@@ -1,0 +1,12 @@
+node_modules
+.env
+.env.local
+.env.production
+uploads/*
+!uploads/.gitkeep
+*.log
+.DS_Store
+README*.md
+debug-*.js
+check-*.js
+scripts/ 

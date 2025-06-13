@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "build": "echo 'No build step'",
+    "vercel-build": "echo 'Vercel build complete'",
     "data:import": "node seeder",
     "data:destroy": "node seeder -d"
   },
@@ -27,7 +29,6 @@
     "nodemon": "^3.0.1"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
+    "node": "18.x"
   }
 }
