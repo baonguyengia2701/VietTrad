@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://viettrad-1.onrender.com/api';
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://viettrad-1.onrender.com/api'
+  : 'http://localhost:5000/api';
+
 
 class AIService {
   // Chat với Local AI Assistant (Free version)
