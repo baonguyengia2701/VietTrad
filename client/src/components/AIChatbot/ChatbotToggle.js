@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaRobot, FaTimes } from 'react-icons/fa';
 import AIChatbot from './AIChatbot';
 import './ChatbotToggle.scss';
@@ -13,6 +13,33 @@ const ChatbotToggle = () => {
   const handleClose = () => {
     setShowChatbot(false);
   };
+
+  // Cleanup effect để đảm bảo không có modal nào bị stuck
+  useEffect(() => {
+    return () => {
+      // Cleanup khi component unmount
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, []);
+
+  // Effect để xử lý ESC key
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.keyCode === 27 && showChatbot) {
+        handleClose();
+      }
+    };
+    
+    if (showChatbot) {
+      document.addEventListener('keydown', handleEsc, false);
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleEsc, false);
+    };
+  }, [showChatbot]);
 
   return (
     <>

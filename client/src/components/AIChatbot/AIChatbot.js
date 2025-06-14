@@ -41,11 +41,28 @@ const AIChatbot = ({ show, onHide }) => {
         // Chỉ remove CSS classes, không touch DOM elements
         document.body.classList.remove('force-enable-scroll');
         document.documentElement.classList.remove('force-enable-scroll');
+        // Đảm bảo remove modal-open class
+        document.body.classList.remove('modal-open');
+        // Reset scroll style
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
       } catch (err) {
         // Ignore cleanup errors
       }
     };
   }, []);
+
+  // Effect để xử lý khi modal show/hide
+  useEffect(() => {
+    if (!show) {
+      // Khi modal bị ẩn, đảm bảo cleanup
+      setTimeout(() => {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }, 150);
+    }
+  }, [show]);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
@@ -141,6 +158,10 @@ const AIChatbot = ({ show, onHide }) => {
       // Chỉ add CSS class, không manipulate DOM trực tiếp
       document.body.classList.add('force-enable-scroll');
       document.documentElement.classList.add('force-enable-scroll');
+      // Đồng thời remove modal-open để đảm bảo
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     } catch (err) {
       console.warn('Error in forceUnlockScroll:', err);
     }
@@ -148,8 +169,14 @@ const AIChatbot = ({ show, onHide }) => {
 
   // Custom onHide để đảm bảo unlock scroll
   const handleModalHide = () => {
+    // Reset states trước khi đóng modal
+    setIsLoading(false);
+    
     // Đơn giản hóa - chỉ gọi onHide, để Bootstrap tự cleanup
     onHide();
+    
+    // Cleanup ngay lập tức
+    forceUnlockScroll();
     
     // Delay nhỏ để đảm bảo modal đã đóng hoàn toàn trước khi unlock scroll
     setTimeout(() => {
@@ -164,6 +191,16 @@ const AIChatbot = ({ show, onHide }) => {
       size="lg" 
       className="ai-chatbot-modal"
       backdrop="static"
+      keyboard={true}
+      centered
+      animation={true}
+      onExited={() => {
+        // Cleanup khi modal đã đóng hoàn toàn
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        forceUnlockScroll();
+      }}
     >
       <Modal.Header className="ai-chatbot-header">
         <div className="d-flex align-items-center">

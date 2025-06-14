@@ -6,7 +6,43 @@ body.modal-open {
   }
 }
 
+// Đảm bảo body unlock scroll khi modal đóng
+body.force-enable-scroll {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
+
+// Đảm bảo modal backdrop cũng bị ẩn hoàn toàn
+.modal-backdrop {
+  &:not(.show) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
+// Đảm bảo không có scroll issue
+html, body {
+  &.force-unlock {
+    overflow: auto !important;
+    padding-right: 0 !important;
+  }
+}
+
+// Ẩn hoàn toàn modal khi không active
 .ai-chatbot-modal {
+  &:not(.show) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  
+  // Đảm bảo z-index phù hợp
+  &.show {
+    z-index: 1055 !important;
+  }
+
   .modal-dialog {
     max-width: 800px;
     height: 80vh;
@@ -320,6 +356,19 @@ body.modal-open {
         }
       }
     }
+  }
+
+  // Transition mượt mà hơn cho modal
+  transition: opacity 0.15s linear, transform 0.15s ease-out;
+  
+  &.fade:not(.show) {
+    opacity: 0 !important;
+    transform: translateY(-50px) !important;
+  }
+  
+  &.fade.show {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
   }
 }
 

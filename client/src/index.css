@@ -81,4 +81,39 @@ body {
   overflow: auto !important;
   height: auto !important;
   position: static !important;
+}
+
+/* Global Modal Fixes */
+body.modal-open {
+  overflow: hidden;
+  padding-right: 0 !important;
+}
+
+/* Ensure modals are completely hidden when not shown */
+.modal:not(.show) {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.modal-backdrop:not(.show) {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Smooth modal transitions */
+.modal.fade {
+  transition: opacity 0.15s linear;
+}
+
+.modal.fade .modal-dialog {
+  transition: transform 0.15s ease-out;
+  transform: translate(0, -50px);
+}
+
+.modal.fade.show .modal-dialog {
+  transform: none;
 } 
