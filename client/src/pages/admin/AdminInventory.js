@@ -174,14 +174,12 @@ const AdminInventory = () => {
   };
 
   const handleCloseModal = useCallback(() => {
-    console.log('🔄 Closing modal...'); // Debug log
     setShowStockModal(false);
     setTimeout(() => {
       resetStockForm();
       setError('');
       setSuccess('');
     }, 100);
-    console.log('✅ Modal closed'); // Debug log
   }, []);
 
   const formatCurrency = (amount) => {

@@ -20,6 +20,7 @@ import Contact from './pages/Contact';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import { ChatbotToggle } from './components/AIChatbot';
 import { CartProvider } from './contexts/CartContext';
 
 // Admin components
@@ -133,6 +134,7 @@ function App() {
                 </Routes>
               </main>
               <Footer />
+              <ChatbotToggle />
             </>
           } />
         </Routes>

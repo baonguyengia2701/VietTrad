@@ -68,32 +68,14 @@ const createOrder = asyncHandler(async (req, res) => {
         // Only validate if product has non-empty variants defined
         if (title && product.variants.title && product.variants.title.length > 0) {
           if (!product.variants.title.includes(title)) {
-            console.warn('Invalid variant title, but allowing order:', {
-              selected: title,
-              available: product.variants.title,
-              productName: product.name
-            });
-            // Don't block the order, just log warning
-            // return res.status(400).json({
-            //   success: false,
-            //   message: `Biến thể "${title}" không có sẵn cho sản phẩm ${product.name}`
-            // });
+            // Variant validation - allowing flexible variants for now
           }
         }
 
         // Only validate if product has non-empty sizes defined
         if (size && product.variants.size && product.variants.size.length > 0) {
           if (!product.variants.size.includes(size)) {
-            console.warn('Invalid variant size, but allowing order:', {
-              selected: size,
-              available: product.variants.size,
-              productName: product.name
-            });
-            // Don't block the order, just log warning
-            // return res.status(400).json({
-            //   success: false,
-            //   message: `Kích thước "${size}" không có sẵn cho sản phẩm ${product.name}`
-            // });
+            // Size validation - allowing flexible sizes for now
           }
         }
       }
@@ -101,7 +83,6 @@ const createOrder = asyncHandler(async (req, res) => {
 
     // Generate unique order number
     const orderNumber = await Order.generateOrderNumber();
-    console.log('Generated order number:', orderNumber);
 
     // Create order - orderItems đã được sanitized ở middleware
     const order = new Order({

@@ -1,0 +1,154 @@
+.chatbot-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1050;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+
+    .pulse-ring,
+    .pulse-ring-2 {
+      display: none;
+    }
+  }
+
+  .toggle-icon {
+    font-size: 1.5rem;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .pulse-ring,
+  .pulse-ring-2 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    border-radius: 50%;
+    animation: pulse 2s ease-out infinite;
+  }
+
+  .pulse-ring-2 {
+    animation-delay: 1s;
+    border-color: rgba(102, 126, 234, 0.3);
+  }
+}
+
+.chatbot-tooltip {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  z-index: 1049;
+  animation: bounceIn 0.5s ease-out;
+
+  .tooltip-content {
+    background: #333;
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    max-width: 200px;
+
+    .tooltip-arrow {
+      position: absolute;
+      bottom: -8px;
+      right: 20px;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid #333;
+    }
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(20px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-5px);
+  }
+  70% {
+    transform: scale(0.9) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .chatbot-toggle {
+    bottom: 20px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+
+    .toggle-icon {
+      font-size: 1.3rem;
+    }
+  }
+
+  .chatbot-tooltip {
+    bottom: 85px;
+    right: 20px;
+
+    .tooltip-content {
+      font-size: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      max-width: 150px;
+    }
+  }
+}
+
+// Hide tooltip after a few seconds
+.chatbot-tooltip {
+  animation: bounceIn 0.5s ease-out, fadeOut 0.5s ease-out 4s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+} 

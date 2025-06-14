@@ -46,4 +46,39 @@ code {
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+}
+
+/* Fix cho scroll issue khi navigate từ modal chatbot */
+body.force-unlock-scroll {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
+
+/* Đảm bảo trang có thể scroll khi navigate từ modal */
+.main-content {
+  overflow-y: auto;
+}
+
+/* Override Bootstrap modal scroll lock - universal fix */
+body.modal-open.force-scroll {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
+
+/* Fallback universal scroll fix */
+html, body {
+  scroll-behavior: smooth;
+}
+
+/* Đảm bảo trang luôn có thể scroll */
+body {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Force enable scroll trên tất cả trang */
+.force-enable-scroll {
+  overflow: auto !important;
+  height: auto !important;
+  position: static !important;
 } 

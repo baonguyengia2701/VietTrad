@@ -38,6 +38,34 @@ const ProductDetail = () => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
+  // Force unlock scroll khi component mount (fix cho navigate từ modal)
+  useEffect(() => {
+    // Đơn giản hóa - chỉ đảm bảo body có thể scroll
+    const unlockScroll = () => {
+      try {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        document.body.classList.add('force-unlock-scroll');
+        // Không touch modal-open class hoặc backdrop - để tự nhiên cleanup
+      } catch (err) {
+        console.warn('Error in ProductDetail scroll unlock:', err);
+      }
+    };
+    
+    // Gọi ngay và sau một delay để đảm bảo
+    unlockScroll();
+    const timer = setTimeout(unlockScroll, 100);
+    
+    return () => {
+      clearTimeout(timer);
+      try {
+        document.body.classList.remove('force-unlock-scroll');
+      } catch (err) {
+        // Ignore cleanup errors
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const fetchProductData = async () => {
       try {
@@ -651,9 +679,14 @@ const ProductDetail = () => {
 
               {/* Facebook Inbox */}
               <div className="facebook-inbox">
-                <button className="facebook-btn">
+                <a 
+                  href="https://www.facebook.com/baodz2701/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="facebook-btn"
+                >
                   INBOX FACEBOOK ĐỂ TƯ VẤN THÊM
-                </button>
+                </a>
               </div>
 
               {/* Social Share */}

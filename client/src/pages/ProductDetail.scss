@@ -449,10 +449,20 @@ $chevron-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox=
         font-size: 0.85rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+        text-align: center;
         
         &:hover {
           background: linear-gradient(135deg, darken(#d4af8c, 5%), darken(#d4af8c, 15%));
           transform: translateY(-1px);
+          color: #fff;
+          text-decoration: none;
+        }
+        
+        &:focus {
+          color: #fff;
+          text-decoration: none;
         }
       }
     }

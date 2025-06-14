@@ -54,27 +54,13 @@ api.interceptors.request.use(
 // Interceptor để xử lý response errors
 api.interceptors.response.use(
   (response) => {
-    console.log('✅ Inventory API Response success:', {
-      url: response.config.url,
-      status: response.status,
-      statusText: response.statusText
-    });
     return response;
   },
   async (error) => {
-    console.log('❌ Inventory API Response error:', {
-      url: error.config?.url,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      message: error.message,
-      data: error.response?.data
-    });
-
     const originalRequest = error.config;
     
     // Nếu lỗi 401 (Unauthorized) và chưa thử refresh token
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      console.log('🔄 Inventory: Attempting token refresh...');
       originalRequest._retry = true; // Đánh dấu đã thử refresh
 
       try {

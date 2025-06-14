@@ -22,4 +22,21 @@ yarn-error.log*
 
 # uploads
 /server/uploads/*
-!/server/uploads/.gitkeep 
+!/server/uploads/.gitkeep
+
+# debug files
+firebase-debug.log
+*/firebase-debug.log
+debug-token.html
+debug-*.js
+test-*.js
+
+# temporary files
+*.tmp
+*.temp
+.temp/
+temp/
+
+# logs
+*.log
+logs/ 
