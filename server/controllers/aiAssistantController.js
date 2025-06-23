@@ -5,9 +5,18 @@ const Category = require('../models/categoryModel');
 const Brand = require('../models/brandModel');
 
 // Khởi tạo OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai;
+try {
+  if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'sk-dummy-key') {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  } else {
+    console.warn('⚠️  OPENAI_API_KEY not configured. AI features will be disabled.');
+  }
+} catch (error) {
+  console.error('Failed to initialize OpenAI client:', error.message);
+}
 
 // @desc    Chat với AI Assistant để tìm sản phẩm
 // @route   POST /api/ai/chat
@@ -18,6 +27,11 @@ const chatWithAssistant = asyncHandler(async (req, res) => {
   if (!message) {
     res.status(400);
     throw new Error('Tin nhắn không được để trống');
+  }
+
+  if (!openai) {
+    res.status(503);
+    throw new Error('Tính năng AI chat tạm thời không khả dụng. Vui lòng thử lại sau!');
   }
 
   try {
@@ -130,6 +144,11 @@ const smartProductSearch = asyncHandler(async (req, res) => {
   if (!query) {
     res.status(400);
     throw new Error('Từ khóa tìm kiếm không được để trống');
+  }
+
+  if (!openai) {
+    res.status(503);
+    throw new Error('Tính năng tìm kiếm thông minh tạm thời không khả dụng. Vui lòng thử lại sau!');
   }
 
   try {

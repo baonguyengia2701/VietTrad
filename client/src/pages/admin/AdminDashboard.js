@@ -53,6 +53,7 @@ const AdminDashboard = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'delivered': return '#28a745';
+      case 'received': return '#198754';
       case 'shipped': return '#17a2b8';
       case 'processing': return '#ffc107';
       case 'confirmed': return '#007bff';
@@ -65,6 +66,7 @@ const AdminDashboard = () => {
   const getStatusText = (status) => {
     switch (status) {
       case 'delivered': return 'Đã giao';
+      case 'received': return 'Đã nhận hàng';
       case 'shipped': return 'Đang giao';
       case 'processing': return 'Đang xử lý';
       case 'confirmed': return 'Đã xác nhận';
@@ -77,6 +79,7 @@ const AdminDashboard = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'delivered': return 'fas fa-check-circle';
+      case 'received': return 'fas fa-check-double';
       case 'shipped': return 'fas fa-truck';
       case 'processing': return 'fas fa-cog';
       case 'confirmed': return 'fas fa-check';
@@ -175,7 +178,7 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{formatCurrency(stats.totalRevenue)}</h3>
-            <p>Tổng Doanh Thu (Đã Giao)</p>
+            <p>Tổng Doanh Thu (Đã Nhận Hàng)</p>
             <small className="paid-revenue">
               Đã thanh toán: {formatCurrency(stats.paidRevenue)}
             </small>

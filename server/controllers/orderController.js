@@ -660,7 +660,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
           _id: null,
           totalRevenue: { 
             $sum: { 
-              $cond: [{ $eq: ['$status', 'delivered'] }, '$totalPrice', 0] 
+              $cond: [{ $in: ['$status', ['delivered', 'received']] }, '$totalPrice', 0] 
             } 
           },
           paidRevenue: { 
@@ -683,6 +683,9 @@ const getDashboardStats = asyncHandler(async (req, res) => {
           deliveredOrders: {
             $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] }
           },
+          receivedOrders: {
+            $sum: { $cond: [{ $eq: ['$status', 'received'] }, 1, 0] }
+          },
           cancelledOrders: {
             $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] }
           }
@@ -697,7 +700,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
           createdAt: {
             $gte: new Date(new Date().setMonth(new Date().getMonth() - 6))
           },
-          status: 'delivered'
+          status: { $in: ['delivered', 'received'] }
         }
       },
       {
@@ -779,6 +782,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
         processing: orderStats[0]?.processingOrders || 0,
         shipped: orderStats[0]?.shippedOrders || 0,
         delivered: orderStats[0]?.deliveredOrders || 0,
+        received: orderStats[0]?.receivedOrders || 0,
         cancelled: orderStats[0]?.cancelledOrders || 0
       },
       recentOrders: formattedRecentOrders,

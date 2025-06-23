@@ -247,6 +247,7 @@ const Profile = () => {
       processing: 'Đang xử lý',
       shipped: 'Đang giao hàng',
       delivered: 'Đã giao hàng',
+      received: 'Đã nhận hàng',
       cancelled: 'Đã hủy'
     };
     return statusMap[status] || status;
@@ -259,6 +260,7 @@ const Profile = () => {
       processing: 'status-processing',
       shipped: 'status-shipped',
       delivered: 'status-delivered',
+      received: 'status-received',
       cancelled: 'status-cancelled'
     };
     return statusClasses[status] || '';
