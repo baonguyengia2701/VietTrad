@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = '/api/inventory';
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://viettrad-1.onrender.com/api/inventory'
+  : 'http://localhost:5000/api/inventory';
 
 // Tạo axios instance với cấu hình mặc định
 const api = axios.create({

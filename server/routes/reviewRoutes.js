@@ -142,7 +142,7 @@ router.get('/product/:productId', getProductReviews);
  * @swagger
  * /api/reviews/can-review/{productId}:
  *   get:
- *     summary: Check if user can review a product (must have purchased and received)
+ *     summary: Check if user can review a product (must have purchased and order delivered/received)
  *     tags: [Reviews]
  *     security:
  *       - bearerAuth: []
@@ -233,7 +233,7 @@ router.get('/:id', getReview);
  * @swagger
  * /api/reviews:
  *   post:
- *     summary: Create a new review (requires purchase and delivery)
+ *     summary: Create a new review (requires purchase and order delivered/received)
  *     tags: [Reviews]
  *     security:
  *       - bearerAuth: []
@@ -267,7 +267,7 @@ router.get('/:id', getReview);
  *       400:
  *         description: Bad request or already reviewed
  *       403:
- *         description: Not purchased or not delivered
+ *         description: Not purchased or order not delivered/received
  *       404:
  *         description: Product not found
  *       401:

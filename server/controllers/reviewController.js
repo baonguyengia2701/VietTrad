@@ -167,14 +167,14 @@ const checkCanReview = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user has purchased this product with delivered status
-    const deliveredOrder = await Order.findOne({
+    // Check if user has purchased this product with delivered or received status
+    const eligibleOrder = await Order.findOne({
       user: userId,
       'orderItems.product': productId,
-      status: 'delivered'
+      status: { $in: ['delivered', 'received'] }
     });
 
-    if (!deliveredOrder) {
+    if (!eligibleOrder) {
       return res.json({
         success: false,
         canReview: false,
@@ -188,8 +188,8 @@ const checkCanReview = asyncHandler(async (req, res) => {
       canReview: true,
       message: 'Bạn có thể đánh giá sản phẩm này',
       orderInfo: {
-        orderNumber: deliveredOrder.orderNumber,
-        deliveredAt: deliveredOrder.deliveredAt
+        orderNumber: eligibleOrder.orderNumber,
+        deliveredAt: eligibleOrder.deliveredAt
       }
     });
 
@@ -224,14 +224,14 @@ const createReview = asyncHandler(async (req, res) => {
       throw new Error('Bạn đã đánh giá sản phẩm này rồi');
     }
 
-    // NEW: Check if user has purchased this product with delivered status
-    const deliveredOrder = await Order.findOne({
+    // NEW: Check if user has purchased this product with delivered or received status
+    const eligibleOrder = await Order.findOne({
       user: req.user._id,
       'orderItems.product': product,
-      status: 'delivered'
+      status: { $in: ['delivered', 'received'] }
     });
 
-    if (!deliveredOrder) {
+    if (!eligibleOrder) {
       res.status(403);
       throw new Error('Bạn cần mua và nhận sản phẩm này trước khi có thể đánh giá');
     }
@@ -244,7 +244,7 @@ const createReview = asyncHandler(async (req, res) => {
       comment,
       images: images || [],
       isApproved: true, // Auto-approve for now, can be changed later
-      order: deliveredOrder._id // Link to the delivered order
+      order: eligibleOrder._id // Link to the eligible order
     });
 
     // Populate user and product info

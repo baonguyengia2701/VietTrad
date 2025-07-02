@@ -795,7 +795,7 @@ const ProductDetail = () => {
                             <p>Để đánh giá sản phẩm này, bạn cần:</p>
                             <ul>
                               <li>Mua sản phẩm này</li>
-                              <li>Đợi đơn hàng được giao thành công</li>
+                              <li>Đợi đơn hàng được giao thành công hoặc xác nhận đã nhận hàng</li>
                               <li>Sau đó bạn sẽ có thể đánh giá sản phẩm</li>
                             </ul>
                           </div>
