@@ -258,10 +258,60 @@ const addComment = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const createBlog = asyncHandler(async (req, res) => {
   try {
+    console.log('Creating blog with data:', req.body);
+    console.log('User creating blog:', req.user ? req.user._id : 'No user');
+
+    // Validate required fields
+    const { title, excerpt, content, featuredImage } = req.body;
+    
+    if (!title || !excerpt || !content || !featuredImage) {
+      return res.status(400).json({
+        success: false,
+        message: 'Thiếu thông tin bắt buộc: tiêu đề, tóm tắt, nội dung và hình ảnh đại diện'
+      });
+    }
+
+    // Generate unique slug
+    let slug = title
+      .toLowerCase()
+      .replace(/[áàảãạăắằẳẵặâấầẩẫậ]/g, 'a')
+      .replace(/[éèẻẽẹêếềểễệ]/g, 'e')
+      .replace(/[íìỉĩị]/g, 'i')
+      .replace(/[óòỏõọôốồổỗộơớờởỡợ]/g, 'o')
+      .replace(/[úùủũụưứừửữự]/g, 'u')
+      .replace(/[ýỳỷỹỵ]/g, 'y')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim('-');
+
+    // Check if slug exists and make it unique
+    let uniqueSlug = slug;
+    let counter = 1;
+    while (await Blog.findOne({ slug: uniqueSlug })) {
+      uniqueSlug = `${slug}-${counter}`;
+      counter++;
+    }
+
     const blogData = {
       ...req.body,
-      author: req.user._id
+      slug: uniqueSlug,
+      author: req.user._id,
+      // Ensure published status is properly set
+      isPublished: req.body.published || req.body.isPublished || false,
+      // Set publishedAt if published
+      publishedAt: (req.body.published || req.body.isPublished) ? new Date() : undefined
     };
+
+    // Remove any undefined values
+    Object.keys(blogData).forEach(key => {
+      if (blogData[key] === undefined) {
+        delete blogData[key];
+      }
+    });
+
+    console.log('Final blog data:', blogData);
 
     const blog = await Blog.create(blogData);
 
@@ -272,9 +322,23 @@ const createBlog = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     console.error('Create blog error:', error);
+    
+    // Provide more specific error messages
+    let errorMessage = 'Không thể tạo bài viết';
+    
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      errorMessage = `Lỗi validation: ${validationErrors.join(', ')}`;
+    } else if (error.code === 11000) {
+      errorMessage = 'Tiêu đề bài viết đã tồn tại, vui lòng chọn tiêu đề khác';
+    } else {
+      errorMessage = errorMessage + ': ' + error.message;
+    }
+    
     res.status(400).json({
       success: false,
-      message: 'Không thể tạo bài viết: ' + error.message
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? error : undefined
     });
   }
 });

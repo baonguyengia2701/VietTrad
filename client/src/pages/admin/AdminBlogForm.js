@@ -122,20 +122,58 @@ const AdminBlogForm = () => {
     setError('');
 
     try {
+      // Client-side validation
+      if (!formData.title.trim()) {
+        throw new Error('Tiêu đề bài viết là bắt buộc');
+      }
+      
+      if (!formData.excerpt.trim()) {
+        throw new Error('Tóm tắt bài viết là bắt buộc');
+      }
+      
+      if (!formData.content.trim()) {
+        throw new Error('Nội dung bài viết là bắt buộc');
+      }
+      
+      if (!formData.featuredImage.trim()) {
+        throw new Error('Hình ảnh đại diện là bắt buộc');
+      }
+
+      console.log('Submitting blog data:', formData);
+
       const submitData = {
-        ...formData,
-        status: formData.published ? 'published' : 'draft'
+        title: formData.title.trim(),
+        excerpt: formData.excerpt.trim(),
+        content: formData.content.trim(),
+        featuredImage: formData.featuredImage.trim(),
+        category: formData.category || 'khác',
+        tags: Array.isArray(formData.tags) ? formData.tags : [],
+        published: formData.published || false,
+        isPublished: formData.published || false,
+        author: formData.author ? formData.author.trim() : undefined
       };
 
-      // Remove author field from submit data when editing (server will preserve original author)
+      // Remove undefined values
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === undefined) {
+          delete submitData[key];
+        }
+      });
+
+      console.log('Final submit data:', submitData);
+
+      let result;
       if (isEditMode) {
+        // Remove author field when editing (server will preserve original author)
         delete submitData.author;
-        await blogService.updateBlog(id, submitData);
+        result = await blogService.updateBlog(id, submitData);
         setSuccessMessage('Cập nhật bài viết thành công!');
       } else {
-        await blogService.createBlog(submitData);
+        result = await blogService.createBlog(submitData);
         setSuccessMessage('Tạo bài viết thành công!');
       }
+
+      console.log('API result:', result);
 
       setTimeout(() => {
         navigate('/admin/blogs');
@@ -143,7 +181,17 @@ const AdminBlogForm = () => {
 
     } catch (error) {
       console.error('Error saving blog:', error);
-      setError(isEditMode ? 'Có lỗi xảy ra khi cập nhật bài viết' : 'Có lỗi xảy ra khi tạo bài viết');
+      
+      let errorMessage = isEditMode ? 'Có lỗi xảy ra khi cập nhật bài viết' : 'Có lỗi xảy ra khi tạo bài viết';
+      
+      // Extract more specific error message from API response
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
